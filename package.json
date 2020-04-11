@@ -1,15 +1,18 @@
 {
-  "name": "lerna-ts",
+  "name": "semanticweb",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap --hoist",
-    "postinstall": "npm run bootstrap",
-    "clean": "lerna run clean",
+    "bootstrap": "lerna bootstrap",
+    "postinstall": "yarn run bootstrap",
+    "clean": "lerna run clean && lerna clean # removes built artifacts and node_modules",
     "build": "lerna run build",
     "pub": "lerna publish"
   },
   "devDependencies": {
-    "lerna": "~3.14.0",
-    "typescript": "~3.4.5"
-  }
+    "lerna": "^3.20.1",
+    "typescript": "^3.8.3"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

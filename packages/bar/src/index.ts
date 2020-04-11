@@ -1,3 +1,3 @@
-import { meaningOfLife } from '@nighttrax/foo';
+import { version } from '@semanticweb/faker';
 
-console.log(meaningOfLife);
+console.log(version);

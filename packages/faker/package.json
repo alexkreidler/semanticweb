@@ -1,6 +1,6 @@
 {
-  "name": "@nighttrax/foo",
-  "version": "1.0.0",
+  "name": "@semanticweb/faker",
+  "version": "0.1.0",
   "main": "dist/index",
   "types": "dist/index",
   "files": [
@@ -13,6 +13,6 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "typescript": "~3.4.5"
+    "typescript": "^3.8.3"
   }
 }
