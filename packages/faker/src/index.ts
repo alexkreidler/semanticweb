@@ -1,31 +1,57 @@
-export const version = require("../package.json").version;
+import { NamedNode, Dataset } from "rdf-js";
 
-import { promises as fs } from "fs";
-import { join } from "path";
+/* # Input
+* This section defines the input structure of the API
 
-import { expand } from "jsonld";
+* BasicInput requires all the fields that are needed to process a requested fake document
+* All fields to generate should simply contain true, but the type and context may optionally be strings. The input will be parsed with JSON-LD to get the fully normalized requested value
+*/
+export type BasicInput = { [key: string]: true } & (
+  | { "@type": string }
+  | { "@type": string; "@context": string }
+);
 
-// Parses JSON for NodeJS environments
-export async function parseJSON(filename: string): Promise<any> {
-  return fs
-    .readFile(join(__dirname, filename), "utf8")
-    .then((text: string) => JSON.parse(text));
+// Mapping
+// This sectinon of the API allows the core library to map simple values such as schema:email to generator functions
+
+type FunctionMap = { [key: string]: Function };
+
+// The simplified map is how all of our data is represented at first. Then it is processed by adding the prefix to the key of the function map.
+type SimplifiedMap = { [prefix: string]: FunctionMap };
+
+export interface MapProcessor {
+  // This function adds the prefix to the key of the function map.
+  expand(input: SimplifiedMap): TypeGeneratorMap;
 }
 
-export async function rexp(filename: string): Promise<any> {
-  const data = await parseJSON(filename);
-  console.log(data);
+// TypeGeneratorMap is a map from fully-qualified Semantic Web IRIs to a function which generates representative data
+export type TypeGeneratorMap = { [semanticType: string]: Function };
 
-  const result = await expand(data);
-  console.log(result);
-  console.log(JSON.stringify(result));
-  
+// Complex properties
+// These will only be tried if the simply properties have failed
+// For thesse, the system needs a way to determine the effective "type" of the property, which it can then pass to the simple MapProcessor
+// It needs support for dereferencing these IRIs
 
-  // console.log(JSON.stringify(result));
-  return result;
-  return null;
+// Implementation note: for now, we don't want to hard code in rdf-vocabularies if possible. Let's just encode a few core ones like
+// http://schema.org/rangeIncludes and similar
+
+export interface ComplexPropertyProcessor {
+  node: NamedNode;
+
+  // fetches the data from the given IRI
+  fetchData(): Promise<Dataset>;
+  readonly data: Dataset;
+
+  // returns the effective type of the node
+  // this can then be looked up if in the mapping if it is a simple value
+  // if not, it needs to be represented
+  getType(): NamedNode;
 }
 
-// export async function generate(input: any): any {
-  
+export const ex: TypeGeneratorMap = {};
+export const inp: FunctionMap = {}; 
+// interface
+
+// export interface Generator {
+//   semanticMap;
 // }

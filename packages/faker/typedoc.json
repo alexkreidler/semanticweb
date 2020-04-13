@@ -1,0 +1,5 @@
+{
+    "exclude": "**/*+(.spec|.e2e).ts",
+    "out": "docs",
+    "mode": "modules"
+}
