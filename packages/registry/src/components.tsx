@@ -13,22 +13,36 @@ let reg = new ComponentRegistry()
 
 // TODO: make data type passed in then map to the @type string
 // maybe if we require expanded data to be passed this would work
-export type RegistryProps = { data: any; children: React.ReactNode }
+export type RegistryProps = {
+    data: any
+    children: React.ReactNode
+    doExpand?: boolean
+}
+
+// as of now, we just require it to be expanded beforehand
 export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
     console.log({ children })
-    let [d, setData] = useState(undefined)
+    // let [d, setData] = useState(undefined)
 
+    // if (d == undefined) {
+    //     return
+    // }
     // useEffect(async () => {
 
     // let expanded = jsonld.expand(data);
 
     // })
 
-    if (d == undefined) {
-        return
+    if (Object.keys(data).length !== 1) {
+        return (
+            <>
+                Error in Semantic Web Registry: Data is not properly formatted
+                in expanded format
+            </>
+        )
     }
 
-    let res = reg.handle(data["@type"])
+    let res = reg.handle(data[Object.keys(data)[0]])
     if (res.isErr()) {
         return <>Error in Semantic Web Registry: {res.error.message}</>
     }

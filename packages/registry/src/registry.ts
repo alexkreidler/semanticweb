@@ -1,6 +1,7 @@
 import React from "react"
 
 import { ok, err, ResultAsync, Result } from "neverthrow"
+// TODO: reevaluate if this poses too much API burden on consumers
 
 type Empty = {}
 type IRI = string
