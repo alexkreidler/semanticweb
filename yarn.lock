@@ -1466,6 +1466,11 @@
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.19.1.tgz#33509849f8e679e4add158959fdb086440e9553f"
   integrity sha512-5qOlnZscTn4xxM5MeGXAMOsIOIKIbh9e85zJWfBRVPlRMEVawzoPhINYbRGkBZCI8LxvBe7tJCdWiarA99OZfQ==
 
+"@types/prop-types@*":
+  version "15.7.3"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
+  integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
+
 "@types/rdf-ext@^1.3.6":
   version "1.3.6"
   resolved "https://registry.yarnpkg.com/@types/rdf-ext/-/rdf-ext-1.3.6.tgz#e908c2d2b3bfe2269272594415bab2c80aafbfb4"
@@ -1486,6 +1491,14 @@
   integrity sha512-IgPTKBbKC4Hm5j7kO9XpJMtWMXCRc9x308VD/e/ibdDiaSc27c7dzwPtgQeWUK0q1IQ5hobOAuHZVvlhIH8eMg==
   dependencies:
     "@types/rdf-js" "*"
+
+"@types/react@^16.9.43":
+  version "16.9.43"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.43.tgz#c287f23f6189666ee3bebc2eb8d0f84bcb6cdb6b"
+  integrity sha512-PxshAFcnJqIWYpJbLPriClH53Z2WlJcVZE+NP2etUtWQs2s7yIMj3/LDKZT/5CHJ/F62iyjVCDu2H3jHEXIxSg==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -2610,6 +2623,11 @@ cssstyle@^2.0.0:
   integrity sha512-sEb3XFPx3jNnCAMtqrXPDeSgQr+jojtCeNf8cvMNMh1cG970+lljssvQDzPq6lmmJu2Vhqood/gtEomBiHOGnA==
   dependencies:
     cssom "~0.3.6"
+
+csstype@^2.2.0:
+  version "2.6.13"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.13.tgz#a6893015b90e84dd6e85d0e3b442a1e84f2dbe0f"
+  integrity sha512-ul26pfSQTZW8dcOnD2iiJssfXw0gdNVX9IJDH/X3K5DGPfj+fUYe3kB+swUY6BF3oZDxaID3AJt+9/ojSAE05A==
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -4453,7 +4471,7 @@ jest@^25.3.0:
     import-local "^3.0.2"
     jest-cli "^25.3.0"
 
-js-tokens@^4.0.0:
+"js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
@@ -4546,6 +4564,19 @@ jsonld@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/jsonld/-/jsonld-3.0.1.tgz#db32320fd9ccba843773bda3fcbcc938aac61b96"
   integrity sha512-/lLx3sSvlqKHu3215+n4Fcmz7Ah8bixVa91CnXpW8XFZd6qCfAMQi/qEYF3u9fghKNqHjAD0TwCUH7fg6IszYg==
+  dependencies:
+    canonicalize "^1.0.1"
+    lru-cache "^5.1.1"
+    object.fromentries "^2.0.2"
+    rdf-canonize "^1.0.2"
+    request "^2.88.0"
+    semver "^6.3.0"
+    xmldom "0.1.19"
+
+jsonld@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/jsonld/-/jsonld-3.1.1.tgz#ec9cf9f8aaacc17642a73715dfd788d2c1a51a74"
+  integrity sha512-GrqERUMZtMcdP8WgTt7drF3Ixf0dERA2Q4X3hTLyKt7CJTTQ5cM1vAHuX797piAejuh/KwNdKklKVB1kfYcJbw==
   dependencies:
     canonicalize "^1.0.1"
     lru-cache "^5.1.1"
@@ -4767,6 +4798,13 @@ lolex@^5.0.0:
   integrity sha512-h4hmjAvHTmd+25JSwrtTIuwbKdwg5NzZVRMLn9saij4SZaepCrTCxPr35H/3bjwfMJtN+t3CX8672UIkglz28A==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+loose-envify@^1.1.0, loose-envify@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
+  integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
+  dependencies:
+    js-tokens "^3.0.0 || ^4.0.0"
 
 loud-rejection@^1.0.0:
   version "1.6.0"
@@ -5167,6 +5205,11 @@ neo-async@^2.6.0:
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
 
+neverthrow@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-2.7.1.tgz#9c8593910f933d2c10345092a7b34244d10759aa"
+  integrity sha512-tk7vBuxlBcVU6GIXrAOpez2ZpvJxVW1xl2OjVufdVd87g61SjvekY0VBOuTh1EdUf6/gbgQcQujpxXlap0bQ0A==
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -5357,7 +5400,7 @@ oauth-sign@~0.9.0:
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.9.0.tgz#47a7b016baa68b5fa0ecf3dee08a85c679ac6455"
   integrity sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==
 
-object-assign@^4.0.1, object-assign@^4.1.0:
+object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
@@ -5834,6 +5877,15 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
+prop-types@^15.6.2:
+  version "15.7.2"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
+  integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
+  dependencies:
+    loose-envify "^1.4.0"
+    object-assign "^4.1.1"
+    react-is "^16.8.1"
+
 proto-list@~1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
@@ -5957,10 +6009,19 @@ rdf-normalize@^1.0.0:
   resolved "https://registry.yarnpkg.com/rdf-normalize/-/rdf-normalize-1.0.0.tgz#53496baf362cce9d9fca1f2216c6c30007f99cca"
   integrity sha1-U0lrrzYszp2fyh8iFsbDAAf5nMo=
 
-react-is@^16.12.0:
+react-is@^16.12.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react@^16.13.1:
+  version "16.13.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
+  integrity sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
 
 read-cmd-shim@^1.0.1:
   version "1.0.5"

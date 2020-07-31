@@ -13,15 +13,12 @@ console.log(schema.email.value);
 
 import { vocabularies } from "@zazuko/rdf-vocabularies";
 
-
 export async function match() {
-
-    vocabularies({ only: ["schema"] }).then((datasets) => {
-        const s: Dataset = datasets["schema"];
-        const result = s.match(schema.birthPlace)
-        console.log(result);
-        
-      });
+  vocabularies({ only: ["schema"] }).then((datasets) => {
+    const s: Dataset = datasets["schema"];
+    const result = s.match(schema.birthPlace);
+    console.log(result);
+  });
 }
 
 // const schemaPerson: NamedNode = schema.Person

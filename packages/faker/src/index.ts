@@ -1,3 +1,5 @@
+export const version = require("../package.json").version;
+
 import { NamedNode, Dataset } from "rdf-js";
 
 /* # Input
@@ -49,7 +51,7 @@ export interface ComplexPropertyProcessor {
 }
 
 export const ex: TypeGeneratorMap = {};
-export const inp: FunctionMap = {}; 
+export const inp: FunctionMap = {};
 // interface
 
 // export interface Generator {

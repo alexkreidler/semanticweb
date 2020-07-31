@@ -1,8 +1,10 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@semanticweb/*": ["packages/*/src"]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@semanticweb/*": ["packages/*/src"]
+        },
+        "esModuleInterop": true,
+        "jsx": "react"
     }
-  }
 }

@@ -1,0 +1,26 @@
+{
+  "name": "@semanticweb/registry",
+  "version": "1.0.0",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn run clean && yarn run compile",
+    "clean": "rm -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "watch": "tsc -w -p tsconfig.build.json",
+    "prepublishOnly": "yarn run build"
+  },
+  "dependencies": {
+    "jsonld": "^3.1.1",
+    "neverthrow": "^2.7.1",
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.43",
+    "typescript": "^3.8.3"
+  },
+  "peerDependencies": {}
+}

@@ -4,7 +4,7 @@ test("exports version", () => {
   expect(version).toBeDefined();
 });
 
-
 test("exports version", async () => {
-    expect(match()).toBeDefined();
-  });
+  let res = await match();
+  expect(res).toBeDefined();
+});
