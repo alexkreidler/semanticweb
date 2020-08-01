@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext, createContext } from "react"
 
 import { ComponentRegistry } from "./registry"
 
 import jsonld from "jsonld"
-
-let reg = new ComponentRegistry()
 
 // type Data = {
 //     "@type": string
@@ -16,29 +14,19 @@ let reg = new ComponentRegistry()
 export type RegistryProps = {
     /** The input data. Should be in (expanded) JSON-LD format */
     data: any
-    children: React.ReactNode
+    children: React.ReactElement<ComponentProps>[]
 
     /** For now, we just require it to be expanded beforehand. This doesn't do anything */
     doExpand?: boolean
 }
 
+let ctx = createContext({ __SEMANTIC_REGISTRY_EMPTY: true })
+
 export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
     console.log({ children })
-    let [r, setR] = useState(reg)
 
-    // reg.registerCallback = () => {
-    //     console.log("callback")
-
-    //     setRend(true)
-    // }
-    // if (d == undefined) {
-    //     return
-    // }
-    // useEffect(async () => {
-
-    // let expanded = jsonld.expand(data);
-
-    // })
+    let reg = new ComponentRegistry<MinimalChildProps>()
+    let c = useContext(ctx)
 
     if (Object.keys(data).length !== 1) {
         return (
@@ -50,21 +38,38 @@ export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
     }
 
     let obj = data[Object.keys(data)[0]]
-    let fullTypeIRI = obj["@type"]
+    // we only take the first defined type.
+    // TODO: fix??
+    let fullTypeIRI = obj["@type"][0]
+
+    React.Children.map(children, (c) => {
+        if (!c.props.children && !c.props.component) {
+            throw new Error(
+                "Provided <Component> doesn't specify a child component to render"
+            )
+        } else if (c.props.children && c.props.component) {
+            throw new Error(
+                "Provided <Component> specifies two child components"
+            )
+        } else {
+            let child = c.props.component ? c.props.component : c.props.children
+            reg.register(c.props.iri, child)
+        }
+    })
 
     // let res
-    let res = r.handle(fullTypeIRI)
+    let res = reg.handle(fullTypeIRI)
 
-    // let res;
-    // useEffect(() => {
-    // }, [rend])
-    // res != undefined &&
-    if (!res || res.isErr()) {
-        // setRend(true)
-        return <>{children}</>
+    if (res.isErr()) {
+        return <>Error in Semantic Web Registry: {res.error.message}</>
         // return <>Error in Semantic Web Registry: {res.error.message}</>
     } else {
-        return <>{res ? res.value : undefined}</>
+        let Final = res.value
+        return (
+            <>
+                <Final data={data}></Final>
+            </>
+        )
     }
 }
 
@@ -76,27 +81,9 @@ export type ComponentProps = {
     iri: string
     // children: React.FC<MinimalChildProps>
 
-    children?(props: MinimalChildProps): React.ReactNode
+    children?: React.FC<MinimalChildProps> //(props: MinimalChildProps): React.ReactNode
     component?: React.FC<MinimalChildProps>
 }
-export const Component: React.FC<ComponentProps> = ({
-    iri,
-    component,
-    children,
-}) => {
-    if (!component && !children) {
-        throw new Error("No child component provided")
-
-        // <>No Provided</>
-    }
-    console.log({ iri })
-
-    if (component) {
-        console.debug("using component prop")
-        reg.register(iri, component)
-    } else if (children) {
-        console.debug("using child function")
-        reg.register(iri, children)
-    }
+export const Component: React.FC<ComponentProps> = () => {
     return <>THIS SHOULD NOT APPEAR</>
 }

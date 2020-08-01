@@ -38,6 +38,7 @@ test("renders", async () => {
                     iri="https://schema.org/Person"
                     component={({ data }) => (
                         <div className="person">
+                            {/* {data} */}
                             <h1>Person: {data.name}</h1>
                         </div>
                     )}

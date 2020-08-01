@@ -3,5 +3,13 @@
 exports[`renders 1`] = `
 <div
   className="app"
-/>
+>
+  <div
+    className="person"
+  >
+    <h1>
+      Person: 
+    </h1>
+  </div>
+</div>
 `;

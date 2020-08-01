@@ -20,7 +20,7 @@ type NotFoundError = {
 
 type Error = ParseError | NotFoundError | InvalidComponentError
 
-export interface IComponentRegistry {
+export interface IComponentRegistry<DataProps> {
     registerCallback: () => void
     handleCallback: () => void
     register(iri: IRI, component: React.ReactNode): Result<Empty, Error>
@@ -28,18 +28,30 @@ export interface IComponentRegistry {
     // however, the system should expand to use @base and @vocab
 
     // undefined is a valid react node. Should we fail silently??
-    handle(iri: IRI): React.ReactNode
+    handle(iri: IRI): Result<React.FC<DataProps>, NotFoundError>
     // Result<React.ReactNode, NotFoundError>
 }
 
-export class ComponentRegistry implements IComponentRegistry {
-    private map: { [key: string]: React.ReactNode } = {}
+const normalizeIRI = (iri: string): string => {
+    console.debug("input iri", iri)
+    // TODO: think about more complex normalization
+    let out = iri.replace(/^http:\/\//i, "https://")
+    console.debug("output iri", out)
+    return out
+}
+
+export class ComponentRegistry<DataProps>
+    implements IComponentRegistry<DataProps> {
+    private map: { [key: string]: React.FC<DataProps> } = {}
     constructor() {}
-    registerCallback: () => void
-    handleCallback: () => void
-    register(iri: string, component: React.ReactNode): Result<Empty, Error> {
+    registerCallback: () => void = () => {}
+    handleCallback: () => void = () => {}
+    register(
+        iri: string,
+        component: React.FC<DataProps>
+    ): Result<Empty, Error> {
         // TODO: validate IRI
-        console.log("got IRI for register:", iri)
+        iri = normalizeIRI(iri)
 
         if (component == undefined) {
             return err({ message: "Invalid Component" })
@@ -50,8 +62,8 @@ export class ComponentRegistry implements IComponentRegistry {
         this.registerCallback()
         return ok({})
     }
-    handle(iri: string): Result<React.ReactNode, NotFoundError> {
-        console.log("got IRI for handle:", iri)
+    handle(iri: string): Result<React.FC<DataProps>, NotFoundError> {
+        iri = normalizeIRI(iri)
         // TODO: should require full IRI?
         let component = this.map[iri]
         if (component == undefined) {
