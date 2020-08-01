@@ -35,7 +35,7 @@ export interface IComponentRegistry<DataProps> {
 const normalizeIRI = (iri: string): string => {
     console.debug("input iri", iri)
     // TODO: think about more complex normalization
-    let out = iri.replace(/^http:\/\//i, "https://")
+    let out = iri.replace(/^https:\/\//i, "http://")
     console.debug("output iri", out)
     return out
 }

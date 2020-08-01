@@ -15,8 +15,11 @@ import {
     waitForElementToBeRemoved,
 } from "@testing-library/react"
 
+// https://schema.org/version/latest/schemaorg-current-http.jsonld
+// "@base": "http://schema.org",
+// "@vocab": "http://schema.org",
 const dat = {
-    "@context": "https://schema.org",
+    "@context": "http://schema.org",
     "@type": "Person",
     address: {
         "@type": "PostalAddress",
@@ -40,60 +43,65 @@ test("data expands properly", async () => {
     console.log(exp)
 })
 
-test("renders", async () => {
-    let exp = await JsonLdProcessor.expand(dat)
-    const App = () => (
-        <div className="app" data-testid="person">
-            <Registry data={exp}>
-                <Component
-                    iri="https://schema.org/Person"
-                    component={({ data }) => (
-                        <div className="person">
-                            {console.log(data)}
-                            <h1>Person: {data.name}</h1>
-                        </div>
-                    )}
-                ></Component>
-                <Component iri="https://schema.org/Article">
-                    {({ data }) => (
-                        <div>
-                            <h1>Article: {data.name}</h1>
-                        </div>
-                    )}
-                </Component>
-            </Registry>
-        </div>
-    )
-    // We aren't doing snapshot testing RN b/c our code is highly dynamic and logic-focused
+// test("renders", async () => {
+//     // let exp = await JsonLdProcessor.expand(dat)
+//     console.log(dat)
 
-    let { container } = render(<App></App>)
-    screen.debug()
+//     const App = () => (
+//         <div className="app">
+//             <Registry data={dat} doExpand={true}>
+//                 <Component
+//                     iri="https://schema.org/Person"
+//                     data-testid="person"
+//                     component={({ data }) => (
+//                         <div className="person">
+//                             {[console.log("got data"), console.log(data)]}
+//                             <h1>Person: {data.name ? data.name : "NONE"}</h1>
+//                             <p>PersonP</p>
+//                         </div>
+//                     )}
+//                 ></Component>
+//                 <Component iri="https://schema.org/Article">
+//                     {({ data }) => (
+//                         <div>
+//                             <h1>Article: {data.name}</h1>
+//                         </div>
+//                     )}
+//                 </Component>
+//             </Registry>
+//         </div>
+//     )
+//     // We aren't doing snapshot testing RN b/c our code is highly dynamic and logic-focused
 
-    let ld = getByText(container, "Loading")
+//     let { container } = render(<App></App>)
+//     screen.debug()
 
-    console.log("Test completed")
+//     let ld = getByText(container, "Loading")
 
-    // await waitForElementToBeRemoved(ld, {
-    //     timeout: 3000,
-    // })
+//     console.log("Test completed")
 
-    await waitFor(
-        () => {
-            console.log("calling waiting function")
-            screen.debug()
+//     // await waitForElementToBeRemoved(ld, {
+//     //     timeout: 3000,
+//     // })
 
-            expect(getByTestId(container, "person")).toBeDefined()
-        },
-        {
-            interval: 100,
-            timeout: 1000,
-            // onT
-        }
-    )
-    // const el = await waitForElement(() => getByTestId(container, "person"))
+//     await waitFor(
+//         () => {
+//             console.log("calling waiting function")
+//             screen.debug()
 
-    // await waitFor(() => {
-    //     expect()
-    // })
-    // console.log(container)
-})
+//             expect(getByText(container, "PersonP")).toBeDefined()
+//             expect(getByText(container, "Person: NONE")).toBeUndefined()
+//         },
+//         {
+//             interval: 100,
+//             timeout: 200,
+//             // onT
+//         }
+//     )
+//     // const el = await waitForElement(() => getByTestId(container, "person"))
+
+//     // await waitFor(() => {
+//     //     expect()
+//     // })
+//     // console.log(container)
+// })
