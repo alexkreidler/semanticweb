@@ -2,6 +2,8 @@ import { Registry, Component } from "../src/index"
 import { JsonLdProcessor } from "jsonld"
 import React from "react"
 
+import renderer from "react-test-renderer"
+
 const dat = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -29,18 +31,19 @@ test("data expands properly", async () => {
 
 test("renders", async () => {
     let exp = await JsonLdProcessor.expand(dat)
-    let jsx = (
+    const App = () => (
         <div className="app">
             <Registry data={exp}>
-                <Component iri="https://schema.org/Person">
-                    {({ data }: { data: any }) => (
+                <Component
+                    iri="https://schema.org/Person"
+                    component={({ data }) => (
                         <div className="person">
                             <h1>Person: {data.name}</h1>
                         </div>
                     )}
-                </Component>
+                ></Component>
                 <Component iri="https://schema.org/Article">
-                    {({ data }: { data: any }) => (
+                    {({ data }) => (
                         <div>
                             <h1>Article: {data.name}</h1>
                         </div>
@@ -50,5 +53,10 @@ test("renders", async () => {
         </div>
     )
     // TODO: do snapshot testing
+
+    const component = renderer.create(<App />)
+    let tree = component.toJSON()
+    expect(tree).toMatchSnapshot()
+
     // TODO: validate structure of rendered DOM
 })

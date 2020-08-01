@@ -14,16 +14,23 @@ let reg = new ComponentRegistry()
 // TODO: make data type passed in then map to the @type string
 // maybe if we require expanded data to be passed this would work
 export type RegistryProps = {
+    /** The input data. Should be in (expanded) JSON-LD format */
     data: any
     children: React.ReactNode
+
+    /** For now, we just require it to be expanded beforehand. This doesn't do anything */
     doExpand?: boolean
 }
 
-// as of now, we just require it to be expanded beforehand
 export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
     console.log({ children })
-    // let [d, setData] = useState(undefined)
+    let [r, setR] = useState(reg)
 
+    // reg.registerCallback = () => {
+    //     console.log("callback")
+
+    //     setRend(true)
+    // }
     // if (d == undefined) {
     //     return
     // }
@@ -42,16 +49,54 @@ export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
         )
     }
 
-    let res = reg.handle(data[Object.keys(data)[0]])
-    if (res.isErr()) {
-        return <>Error in Semantic Web Registry: {res.error.message}</>
+    let obj = data[Object.keys(data)[0]]
+    let fullTypeIRI = obj["@type"]
+
+    // let res
+    let res = r.handle(fullTypeIRI)
+
+    // let res;
+    // useEffect(() => {
+    // }, [rend])
+    // res != undefined &&
+    if (!res || res.isErr()) {
+        // setRend(true)
+        return <>{children}</>
+        // return <>Error in Semantic Web Registry: {res.error.message}</>
+    } else {
+        return <>{res ? res.value : undefined}</>
     }
-    return <>{res.value}</>
 }
 
-export type ComponentProps = { iri: string; children: React.ReactNode }
-export const Component: React.FC<ComponentProps> = ({ iri, children }) => {
+interface MinimalChildProps {
+    data: any
+}
+
+export type ComponentProps = {
+    iri: string
+    // children: React.FC<MinimalChildProps>
+
+    children?(props: MinimalChildProps): React.ReactNode
+    component?: React.FC<MinimalChildProps>
+}
+export const Component: React.FC<ComponentProps> = ({
+    iri,
+    component,
+    children,
+}) => {
+    if (!component && !children) {
+        throw new Error("No child component provided")
+
+        // <>No Provided</>
+    }
     console.log({ iri })
-    reg.register(iri, children)
+
+    if (component) {
+        console.debug("using component prop")
+        reg.register(iri, component)
+    } else if (children) {
+        console.debug("using child function")
+        reg.register(iri, children)
+    }
     return <>THIS SHOULD NOT APPEAR</>
 }
