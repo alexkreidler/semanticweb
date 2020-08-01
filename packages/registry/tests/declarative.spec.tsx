@@ -2,7 +2,18 @@ import { Registry, Component } from "../src/index"
 import { JsonLdProcessor } from "jsonld"
 import React from "react"
 
-import renderer from "react-test-renderer"
+import {
+    render,
+    fireEvent,
+    waitFor,
+    screen,
+    getByText,
+    act,
+    waitForElement,
+    findByTestId,
+    getByTestId,
+    waitForElementToBeRemoved,
+} from "@testing-library/react"
 
 const dat = {
     "@context": "https://schema.org",
@@ -32,13 +43,13 @@ test("data expands properly", async () => {
 test("renders", async () => {
     let exp = await JsonLdProcessor.expand(dat)
     const App = () => (
-        <div className="app">
+        <div className="app" data-testid="person">
             <Registry data={exp}>
                 <Component
                     iri="https://schema.org/Person"
                     component={({ data }) => (
                         <div className="person">
-                            {/* {data} */}
+                            {console.log(data)}
                             <h1>Person: {data.name}</h1>
                         </div>
                     )}
@@ -53,11 +64,36 @@ test("renders", async () => {
             </Registry>
         </div>
     )
-    // TODO: do snapshot testing
+    // We aren't doing snapshot testing RN b/c our code is highly dynamic and logic-focused
 
-    const component = renderer.create(<App />)
-    let tree = component.toJSON()
-    expect(tree).toMatchSnapshot()
+    let { container } = render(<App></App>)
+    screen.debug()
 
-    // TODO: validate structure of rendered DOM
+    let ld = getByText(container, "Loading")
+
+    console.log("Test completed")
+
+    // await waitForElementToBeRemoved(ld, {
+    //     timeout: 3000,
+    // })
+
+    await waitFor(
+        () => {
+            console.log("calling waiting function")
+            screen.debug()
+
+            expect(getByTestId(container, "person")).toBeDefined()
+        },
+        {
+            interval: 100,
+            timeout: 1000,
+            // onT
+        }
+    )
+    // const el = await waitForElement(() => getByTestId(container, "person"))
+
+    // await waitFor(() => {
+    //     expect()
+    // })
+    // console.log(container)
 })

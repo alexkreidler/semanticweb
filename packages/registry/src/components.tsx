@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, createContext } from "react"
 
 import { ComponentRegistry } from "./registry"
 
-import jsonld from "jsonld"
+import jsonld, { JsonLdProcessor } from "jsonld"
 
 // type Data = {
 //     "@type": string
@@ -57,6 +57,10 @@ export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
         }
     })
 
+    let [compacting, setCompacting] = useState(true)
+
+    let [fdata, setFData] = useState(undefined)
+
     // let res
     let res = reg.handle(fullTypeIRI)
 
@@ -65,11 +69,22 @@ export const Registry: React.FC<RegistryProps> = ({ children, data }) => {
         // return <>Error in Semantic Web Registry: {res.error.message}</>
     } else {
         let Final = res.value
-        return (
-            <>
-                <Final data={data}></Final>
-            </>
-        )
+        if (!data) {
+            throw new Error("wat!")
+        }
+        // NOTE: the typescript definitions for this function allow 1 arg, but the runtime needs 2
+        if (!fdata) {
+            jsonld
+                .compact(data, {})
+                .then((v) => {
+                    console.log("Done compacting, got", v)
+
+                    setFData(v)
+                    setCompacting(false)
+                })
+                .catch((e) => console.error(e))
+        }
+        return compacting ? <>Loading</> : <Final data={fdata}></Final>
     }
 }
 
