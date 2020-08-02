@@ -15,8 +15,8 @@ type ConfigError = {}
  *
  * They are responsible for translating requests from their specific API into a standardized Query format
  */
-interface APIFrontend {
-    configure(config: any): ConfigError
+export interface APIFrontend<C> {
+    configure(config: C): ConfigError
     start(): ResultAsync<Empty, IOErrror>
     stop(): ResultAsync<Empty, IOErrror>
 }
@@ -26,7 +26,7 @@ interface APIFrontend {
  * and recieving standardized queries from frontends. It then forwards those
  * queries to registered backends.
  */
-interface QueryService {
-    registerFrontend(f: APIFrontend): Result<Empty, ConfigError>
+export interface QueryService {
+    registerFrontend<C>(f: APIFrontend<C>): Result<Empty, ConfigError>
     startFrontends(): ResultAsync<Empty, IOErrror>
 }

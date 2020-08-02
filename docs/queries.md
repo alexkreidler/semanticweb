@@ -41,3 +41,9 @@ However, most traditional REST business use-cases that follow the RBDMS (e.g. up
 Other APIs:
 SPARQL - could be mapped fairly natively??
 do we need a subset to simplify implementation?
+
+## Generic configurable options
+
+-   Use a builtin ULID generator for IDs or allow custom IDs
+-   Allow inserting/updating deleting triples that link to an invalid ID? if above, then prolly not
+-   Allow deleting nodes that are referenced by existing triples
