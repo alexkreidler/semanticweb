@@ -1,48 +1,40 @@
 import stream from "stream"
 import { EventEmitter } from "events"
 
-export interface ReadableObjStream<T>
-    extends Omit<stream.Readable, "push" | "read"> {}
+export interface ReadableObjStream<T> extends Omit<stream.Readable, "read"> {}
 
 // Use extends (TYPE as any) to avoid compilation errors and override `Omit`-ted methods
 export class ReadableObjStream<T> extends (stream.Readable as any) {
     constructor() {
         super({ objectMode: true }) // force object mode. You can merge it with original options
     }
-    // Override `Omit`-ed methods with YOUR CUSTOM SIGNATURE (can be non-comatible with parent):
-    push(myOwnNonCompatibleSignature: T): string {
-        return "" /* implementation*/
-    }
-    read(options_nonCompatibleSignature: { opts: keyof T }): string {
-        return "" /* implementation*/
+
+    // We don't want to restrict the size of the read in bytes in object mode
+    read(): T {
+        // const swrite = new stream.Readable()
+        // let r: typeof swrite.read = super.write
+
+        return super.read()
     }
 }
 
 let typedReadable = new ReadableObjStream<{ myData: string }>()
 
-export interface WritableObjStream<T>
-    extends Omit<stream.Writable, "write" | "read"> {}
+export interface WritableObjStream<T> extends Omit<stream.Writable, "write"> {}
 
 export class WritableObjStream<T> extends (stream.Writable as any) {
-    writableObjectMode: true
+    constructor() {
+        super({ objectMode: true }) // force object mode. You can merge it with original options
+    }
+
+    // eh
+    // purely for typing purposes
+    // private swrite
 
     write(object: T, cb?: (error: Error | null | undefined) => void): boolean {
-        let s: NodeJS.WritableStream = undefined;
-        EventEmitter
-        // @ts-ignore
-        s = super
+        const swrite = new stream.Writable()
+        let w: typeof swrite.write = super.write
 
-        return s.write()
+        return w(object, cb)
     }
-
-    read(size?: number): T[] {
-
-    }
-    // write(
-    //     chunk: any,
-    //     encoding: string,
-    //     cb?: (error: Error | null | undefined) => void
-    // ): boolean {
-    //     return true
-    // }
 }
