@@ -1,7 +1,9 @@
-import { APIFrontend, TripleSink } from "./api"
+import { APIFrontend } from "../api/services"
 import { ResultAsync } from "neverthrow"
 import bunyan from "bunyan"
 import express, { Application } from "express"
+import { TripleSink } from "../api/broker"
+import { ulid } from "ulid"
 
 type IRI = string
 
@@ -12,7 +14,9 @@ type IRI = string
 type Resource = {
     /** The name for the resource. Will be used for creating API endpoints. Should be URL-encoded */
     name: string
-    /** The Linked Data type of the resource. Technically JSON-LD supports multiple types. We don't (simplicity) */
+    /** The RDF IRI type of the resource. Technically JSON-LD supports multiple types. We don't (simplicity)
+     * e.g.
+     */
     type: IRI
 }
 
@@ -72,7 +76,39 @@ class HTTPFrontend implements APIFrontend<HTTPConfig> {
 
         for (let resource of config.mapping) {
             log.debug(`Configuring: ${resource.name}`)
-            app.get(`/${resource.name}`, () => {})
+            app.get(`/${resource.name}/`, (req, res) => {
+                // on response, check that the number of triples from each subject is only one
+                this.tripleSink.write({
+                    requestID: ulid(),
+                    subject: {
+                        match: "ANY",
+                    },
+                    predicate: {
+                        match: "EXACT",
+                        // true exact IRI is http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                        value: "rdf:type",
+                    },
+                    object: {
+                        match: "EXACT",
+                        value: resource.type,
+                    },
+                })
+            })
+            app.get(`/${resource.name}/:id`, (req, res) => {
+                this.tripleSink.write({
+                    requestID: ulid(),
+                    subject: {
+                        match: "EXACT",
+                        value: req.params.id,
+                    },
+                    predicate: {
+                        match: "ANY",
+                    },
+                    object: {
+                        match: "ANY",
+                    },
+                })
+            })
         }
         return { ok: true }
     }

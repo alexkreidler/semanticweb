@@ -16,7 +16,8 @@
   "dependencies": {
     "bunyan": "^1.8.14",
     "express": "^4.17.1",
-    "neverthrow": "^2.7.1"
+    "neverthrow": "^2.7.1",
+    "ulid": "^2.3.0"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",

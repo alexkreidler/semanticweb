@@ -18,8 +18,6 @@ export class ReadableObjStream<T> extends (stream.Readable as any) {
     }
 }
 
-let typedReadable = new ReadableObjStream<{ myData: string }>()
-
 export interface WritableObjStream<T> extends Omit<stream.Writable, "write"> {}
 
 export class WritableObjStream<T> extends (stream.Writable as any) {
@@ -27,14 +25,7 @@ export class WritableObjStream<T> extends (stream.Writable as any) {
         super({ objectMode: true }) // force object mode. You can merge it with original options
     }
 
-    // eh
-    // purely for typing purposes
-    // private swrite
-
     write(object: T, cb?: (error: Error | null | undefined) => void): boolean {
-        const swrite = new stream.Writable()
-        let w: typeof swrite.write = super.write
-
-        return w(object, cb)
+        return super.write(object, cb)
     }
 }

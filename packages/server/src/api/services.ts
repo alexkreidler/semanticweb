@@ -1,21 +1,13 @@
 // Use Rust-style explicit error handling
 import { ok, err, ResultAsync, Result } from "neverthrow"
 import { Writable } from "stream"
+import { TripleSink } from "./broker"
 
 type Empty = {}
 
 type IOErrror = {}
 
 type ConfigError = {}
-
-type Query = {}
-type Mutation = {}
-type BaseMessage = {
-    // Necessary for multiplexing reqs and resps over stream
-    requestID: string
-}
-
-type Message = (Query | Mutation) & BaseMessage
 
 /** API Frontend represents a specific service that will listen to a given API type (e.g. GraphQL or JSON-LD)
  * They accept a standardized configuration format describing
