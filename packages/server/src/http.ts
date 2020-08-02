@@ -1,13 +1,17 @@
-import { APIFrontend } from "./api"
+import { APIFrontend, TripleSink } from "./api"
 import { ResultAsync } from "neverthrow"
+import bunyan from "bunyan"
+import express, { Application } from "express"
 
 type IRI = string
 
+// TODO: use different names? no
+/** The singular name for the resource */
+/** The plural name for the resource, used for the collection of all resources of that type */
+
 type Resource = {
-    /** The singular name for the resource */
+    /** The name for the resource. Will be used for creating API endpoints. Should be URL-encoded */
     name: string
-    /** The plural name for the resource, used for the collection of all resources of that type */
-    collection: string
     /** The Linked Data type of the resource. Technically JSON-LD supports multiple types. We don't (simplicity) */
     type: IRI
 }
@@ -45,9 +49,32 @@ type HTTPConfig = {
     }
 }
 
+const log = bunyan.createLogger({
+    name: "semanticweb-server",
+    stream: process.stdout,
+    level: "debug",
+})
+
 class HTTPFrontend implements APIFrontend<HTTPConfig> {
-    configure(config: HTTPConfig): {} {
-        throw new Error("Method not implemented.")
+    tripleSink: TripleSink = new TripleSink()
+    // app: Application = undefined
+
+    configure(config: HTTPConfig): { ok: true } {
+        let app = express()
+
+        app.get("/", (req, res) => {
+            res.send({
+                about:
+                    "The mapping key contains a list of all resources provided here. Go to /{name} to acceess all their members",
+                mapping: config.mapping,
+            })
+        })
+
+        for (let resource of config.mapping) {
+            log.debug(`Configuring: ${resource.name}`)
+            app.get(`/${resource.name}`, () => {})
+        }
+        return { ok: true }
     }
     start(): ResultAsync<{}, {}> {
         throw new Error("Method not implemented.")

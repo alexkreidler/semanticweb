@@ -1,11 +1,21 @@
 // Use Rust-style explicit error handling
 import { ok, err, ResultAsync, Result } from "neverthrow"
+import { Writable } from "stream"
 
 type Empty = {}
 
 type IOErrror = {}
 
 type ConfigError = {}
+
+type Query = {}
+type Mutation = {}
+type BaseMessage = {
+    // Necessary for multiplexing reqs and resps over stream
+    requestID: string
+}
+
+type Message = (Query | Mutation) & BaseMessage
 
 /** API Frontend represents a specific service that will listen to a given API type (e.g. GraphQL or JSON-LD)
  * They accept a standardized configuration format describing
@@ -19,6 +29,14 @@ export interface APIFrontend<C> {
     configure(config: C): ConfigError
     start(): ResultAsync<Empty, IOErrror>
     stop(): ResultAsync<Empty, IOErrror>
+
+    /** This is expected to be set by the user of the API Frontend before any data arrives. It may be set after calling configure */
+    /**
+     *  TODO: use cases
+     * - JSON-LD to RDF streaming - yes, benefit to node Streams
+     * - JSON-LD fetch one node - not much benefit, also needs to return result
+     */
+    tripleSink: TripleSink
 }
 
 /**
