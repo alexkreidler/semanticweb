@@ -1,0 +1,9 @@
+{
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "@id": "https://example.com#organization",
+    "url": "https://example.com",
+    "name": "Awesome Organization",
+    "description": "Add a description if you want.",
+    "sameAs": ["facebook.com/Page", "plus.google.com/page", "twitter.com/page"]
+}

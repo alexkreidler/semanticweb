@@ -1,0 +1,6 @@
+{
+    "@context": "https://schema.org/",
+    "@type": "Person",
+    "jobTitle": true,
+    "name": true
+}
