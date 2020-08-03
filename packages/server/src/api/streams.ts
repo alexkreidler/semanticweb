@@ -1,5 +1,7 @@
 import stream from "stream"
-import { EventEmitter } from "events"
+// import { EventEmitter } from "events"
+
+// Considered using https://github.com/mroderick/PubSubJS, but native is prolly better for performance.
 
 export interface ReadableObjStream<T> extends Omit<stream.Readable, "read"> {}
 
@@ -25,6 +27,21 @@ export class WritableObjStream<T> extends (stream.Writable as any) {
         super({ objectMode: true }) // force object mode. You can merge it with original options
     }
 
+    write(object: T, cb?: (error: Error | null | undefined) => void): boolean {
+        return super.write(object, cb)
+    }
+}
+
+export interface DuplexObjStream<T> extends Omit<stream.Writable, "write"> {}
+
+export class DuplexObjStream<T> extends (stream.Duplex as any) {
+    constructor() {
+        super({ objectMode: true }) // force object mode. You can merge it with original options
+    }
+
+    read(): T {
+        return super.read()
+    }
     write(object: T, cb?: (error: Error | null | undefined) => void): boolean {
         return super.write(object, cb)
     }

@@ -1,5 +1,6 @@
 import { WritableObjStream } from "./streams"
 
+import { Algebra } from "sparqlalgebrajs"
 // type Matcher = string | "ANY"
 
 type Any = {
@@ -21,21 +22,24 @@ type IRI = {
 type Match = Any | Exact
 
 type Query = {
-    subject: Match
-    predicate: Match
-    object: Match
+    type: "query"
+    op: Algebra.Operation
 }
 type Mutation = {
-    update: boolean
+    type: "mutation"
+    op: Algebra.Operation
 }
 type BaseMessage = {
     // Necessary for multiplexing reqs and resps over stream
     requestID: string
 }
 
-type MT = Query | Mutation
-type Message = BaseMessage & MT
+type RequestMessage = Query | Mutation
+type Message = BaseMessage & RequestMessage
 
 // export type TripleSink = WritableObjStream<Message>
 
-export class TripleSink extends WritableObjStream<Message> {}
+// class TripleSinkC extends WritableObjStream<Message> {}
+
+// // Creates theh singleton triple
+// export const TripleSink = new TripleSinkC()

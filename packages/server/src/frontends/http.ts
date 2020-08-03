@@ -2,7 +2,7 @@ import { APIFrontend } from "../api/services"
 import { ResultAsync } from "neverthrow"
 import bunyan from "bunyan"
 import express, { Application } from "express"
-import { TripleSink } from "../api/broker"
+// import { TripleSink } from "../api/broker"
 import { ulid } from "ulid"
 
 type IRI = string
@@ -60,7 +60,7 @@ const log = bunyan.createLogger({
 })
 
 class HTTPFrontend implements APIFrontend<HTTPConfig> {
-    tripleSink: TripleSink = new TripleSink()
+    // tripleSink: TripleSink = new TripleSink()
     // app: Application = undefined
 
     configure(config: HTTPConfig): { ok: true } {
@@ -78,36 +78,36 @@ class HTTPFrontend implements APIFrontend<HTTPConfig> {
             log.debug(`Configuring: ${resource.name}`)
             app.get(`/${resource.name}/`, (req, res) => {
                 // on response, check that the number of triples from each subject is only one
-                this.tripleSink.write({
-                    requestID: ulid(),
-                    subject: {
-                        match: "ANY",
-                    },
-                    predicate: {
-                        match: "EXACT",
-                        // true exact IRI is http://www.w3.org/1999/02/22-rdf-syntax-ns#type
-                        value: "rdf:type",
-                    },
-                    object: {
-                        match: "EXACT",
-                        value: resource.type,
-                    },
-                })
+                // this.tripleSink.write({
+                //     requestID: ulid(),
+                //     subject: {
+                //         match: "ANY",
+                //     },
+                //     predicate: {
+                //         match: "EXACT",
+                //         // true exact IRI is http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+                //         value: "rdf:type",
+                //     },
+                //     object: {
+                //         match: "EXACT",
+                //         value: resource.type,
+                //     },
+                // })
             })
             app.get(`/${resource.name}/:id`, (req, res) => {
-                this.tripleSink.write({
-                    requestID: ulid(),
-                    subject: {
-                        match: "EXACT",
-                        value: req.params.id,
-                    },
-                    predicate: {
-                        match: "ANY",
-                    },
-                    object: {
-                        match: "ANY",
-                    },
-                })
+                // this.tripleSink.write({
+                //     requestID: ulid(),
+                //     subject: {
+                //         match: "EXACT",
+                //         value: req.params.id,
+                //     },
+                //     predicate: {
+                //         match: "ANY",
+                //     },
+                //     object: {
+                //         match: "ANY",
+                //     },
+                // })
             })
         }
         return { ok: true }

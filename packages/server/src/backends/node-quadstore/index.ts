@@ -4,22 +4,40 @@ import SparqlEngine from "quadstore-sparql"
 import rdfParser, { RdfParser } from "rdf-parse"
 import fs from "fs"
 import { Backend } from "../../api/services"
+import { LOADIPHLPAPI } from "dns"
 
 export class QuadStore implements Backend {
+    private store: quadstore.RdfStore
     initialize() {
-        // const store = new quadstore.RdfStore(memdown())
+        const opts = {
+            dataFactory: require("@rdfjs/data-model"),
+        }
+        this.store = new quadstore.RdfStore(memdown(), opts)
         // const sparqlEngineInstance = new SparqlEngine(store)
 
         const path = "./data/person.jsonld"
         const textStream = fs.createReadStream(path)
+        console.log(this.store)
 
         // these types should be linked + exported automatically
         const r: RdfParser = rdfParser
-        r.parse(textStream, { path })
-            .on("data", (quad) => console.log(quad))
-            .on("error", (error) => console.error(error))
-            .on("end", () => console.log("All done!"))
+        // Do we want to add logging to this
+        const parsedStream = r.parse(textStream, { path })
 
-        // store.import()
+        let rs = this.store.import(parsedStream)
+        console.log(rs)
+
+        rs.on("error", console.log)
+        rs.on("end", () => {
+            console.log(rs)
+
+            // rs.unpipe()
+        })
+        rs.pause()
+
+        return
+    }
+    cleanup() {
+        // this.store.end
     }
 }

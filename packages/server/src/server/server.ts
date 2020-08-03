@@ -3,8 +3,8 @@ import { ResultAsync, ok, Result, okAsync } from "neverthrow"
 import { QuadStore } from "../backends/node-quadstore"
 
 class SemanticServer implements DynamicServer {
-    private frontends: APIFrontend<any>[]
-    private backends: Backend[]
+    private frontends: APIFrontend<any>[] = []
+    private backends: Backend[] = []
 
     private version = "0.1.0"
 
@@ -24,7 +24,14 @@ class SemanticServer implements DynamicServer {
         }
         for (const backend of this.backends) {
             console.log(backend)
+            backend.initialize()
         }
+        console.log("done initing")
+
+        setTimeout(() => {
+            this.backends[0].cleanup()
+        }, 1000)
+
         return okAsync({})
     }
 }

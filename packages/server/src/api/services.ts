@@ -1,7 +1,7 @@
 // Use Rust-style explicit error handling
 import { ok, err, ResultAsync, Result } from "neverthrow"
-import { Writable } from "stream"
-import { TripleSink } from "./broker"
+// import { Writable } from "stream"
+// import { TripleSink } from "./broker"
 
 type Empty = {}
 
@@ -28,7 +28,7 @@ export interface APIFrontend<C> {
      * - JSON-LD to RDF streaming - yes, benefit to node Streams
      * - JSON-LD fetch one node - not much benefit, also needs to return result
      */
-    tripleSink: TripleSink
+    // tripleSink: TripleSink
 }
 
 /**
@@ -36,7 +36,16 @@ export interface APIFrontend<C> {
  * and recieving standardized queries from frontends. It then forwards those
  * queries to registered backends.
  */
-export interface QueryService {
+export interface DynamicServer {
     registerFrontend<C>(f: APIFrontend<C>): Result<Empty, ConfigError>
-    startFrontends(): ResultAsync<Empty, IOErrror>
+    registerBackend(b: Backend): Result<Empty, ConfigError>
+
+    // starts frontends and backends
+    start(): ResultAsync<Empty, IOErrror>
+}
+
+// We may want to implement rdf-js Store
+export interface Backend {
+    initialize()
+    cleanup()
 }
