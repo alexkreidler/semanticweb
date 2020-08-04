@@ -9,6 +9,11 @@ type IOErrror = {}
 
 type ConfigError = {}
 
+interface CommonComponent {
+    start(): ResultAsync<{}, {}>
+    stop(): ResultAsync<{}, {}>
+}
+
 /** API Frontend represents a specific service that will listen to a given API type (e.g. GraphQL or JSON-LD)
  * They accept a standardized configuration format describing
  * 1. The schema of the data types (Internal Schema)
@@ -17,10 +22,9 @@ type ConfigError = {}
  *
  * They are responsible for translating requests from their specific API into a standardized Query format
  */
-export interface APIFrontend<C> {
+export interface APIFrontend<C> extends CommonComponent {
+    name: string
     configure(config: C): ConfigError
-    start(): ResultAsync<Empty, IOErrror>
-    stop(): ResultAsync<Empty, IOErrror>
 
     /** This is expected to be set by the user of the API Frontend before any data arrives. It may be set after calling configure */
     /**
@@ -36,16 +40,14 @@ export interface APIFrontend<C> {
  * and recieving standardized queries from frontends. It then forwards those
  * queries to registered backends.
  */
-export interface DynamicServer {
+export interface DynamicServer extends CommonComponent {
     registerFrontend<C>(f: APIFrontend<C>): Result<Empty, ConfigError>
     registerBackend(b: Backend): Result<Empty, ConfigError>
 
-    // starts frontends and backends
-    start(): ResultAsync<Empty, IOErrror>
+    // Start and stop starts frontends and backends
 }
 
 // We may want to implement rdf-js Store
-export interface Backend {
-    initialize()
-    cleanup()
+export interface Backend extends CommonComponent {
+    name: string
 }

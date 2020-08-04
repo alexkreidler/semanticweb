@@ -4,10 +4,12 @@ import SparqlEngine from "quadstore-sparql"
 import rdfParser, { RdfParser } from "rdf-parse"
 import fs from "fs"
 import { Backend } from "../../api/services"
+import { ResultAsync, okAsync } from "neverthrow"
 
 export class QuadStore implements Backend {
+    name = "node-quadstore"
     private store: RdfStore
-    initialize() {
+    start(): ResultAsync<{}, {}> {
         const opts = {
             backend: memdown(),
             dataFactory: require("@rdfjs/data-model"),
@@ -17,7 +19,6 @@ export class QuadStore implements Backend {
 
         const path = "./data/person.jsonld"
         const textStream = fs.createReadStream(path)
-        console.log(this.store)
 
         // these types should be linked + exported automatically
         const r: RdfParser = rdfParser
@@ -25,11 +26,20 @@ export class QuadStore implements Backend {
         const parsedStream = r.parse(textStream, { path })
 
         let rs = this.store.import(parsedStream)
-        console.log(rs)
 
-        return
+        // setTimeout(async () => {
+        //     console.log("in timeout, done")
+
+        //     await this.store.close()
+        // }, 1000)
+
+        return okAsync({})
     }
-    cleanup() {
-        // this.store.end
+    stop(): ResultAsync<{}, {}> {
+        const run = async () => {
+            await this.store.close()
+            return {}
+        }
+        return ResultAsync.fromPromise(run(), (e) => ({ msg: e }))
     }
 }

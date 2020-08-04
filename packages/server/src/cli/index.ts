@@ -10,6 +10,19 @@ console.log(
     )
 )
 
+async function handler(arvgv) {
+    console.log("in handler")
+
+    await BasicServer.start()
+
+    console.log("after start")
+
+    await BasicServer.stop()
+    console.log("after cleanup")
+
+    return
+}
+
 program
     .name("semantic-web-server")
     .version("0.1.0")
@@ -18,8 +31,8 @@ program
     )
     .command("start")
     .description("Starts the server with the default frontends and backends")
-    .action(() => {
-        BasicServer.start()
-    })
+    .action(handler)
 
 program.parse(process.argv)
+
+console.log("after parse")

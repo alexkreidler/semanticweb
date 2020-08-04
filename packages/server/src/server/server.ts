@@ -16,22 +16,28 @@ class SemanticServer implements DynamicServer {
         this.backends.push(b)
         return ok({})
     }
+    stop(): ResultAsync<{}, {}> {
+        for (let frontend of this.frontends) {
+            console.log("stopping frontend", frontend.name)
+            frontend.stop()
+        }
+        for (const backend of this.backends) {
+            console.log("stopping backend", backend.name)
+            backend.stop()
+        }
+        return okAsync({})
+    }
     start(): ResultAsync<{}, {}> {
         console.log("Starting Semantic Server v" + this.version)
 
         for (const frontend of this.frontends) {
-            console.log(frontend)
+            console.log("starting frontend:", frontend.name)
         }
         for (const backend of this.backends) {
-            console.log(backend)
-            backend.initialize()
+            console.log("starting backend:", backend.name)
+            backend.start()
         }
-        console.log("done initing")
-
-        setTimeout(() => {
-            this.backends[0].cleanup()
-        }, 1000)
-
+        console.log("done starting")
         return okAsync({})
     }
 }
