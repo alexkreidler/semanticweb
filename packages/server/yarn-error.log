@@ -1,30 +1,30 @@
 Arguments: 
-  /home/alex/.nvm/versions/node/v12.18.2/bin/node /tmp/fnm-shell-4629912/bin/yarn add @rdf-data-model
+  /Users/alex/bin/node /Users/alex/.yarn/bin/yarn.js add @types/sparqlalgebrajs
 
 PATH: 
-  /home/alex/.nvm/versions/node/v12.18.2/bin:/home/alex/.pyenv/libexec:/home/alex/.pyenv/plugins/python-build/bin:/home/alex/.pyenv/plugins/pyenv-virtualenv/bin:/home/alex/.pyenv/plugins/pyenv-update/bin:/home/alex/.pyenv/plugins/pyenv-installer/bin:/home/alex/.pyenv/plugins/pyenv-doctor/bin:/caches/cargo/bin:/home/alex/gems/bin:/home/alex/.pyenv/shims:/home/alex/.pyenv/shims:/home/alex/.yarn/bin:/tmp/fnm-shell-4629912/bin:/home/alex/.fnm:/home/alex/openrefine-3.2:/home/alex/.pyenv/bin:/home/alex/go/bin:/snap/bin:/home/alex/bin:/home/alex/miniconda/bin:/usr/local/cuda/bin:/home/alex/miniconda/condabin:/home/alex/.nix-profile/bin:/c2/caches/cargo/bin:/home/alex/.local/bin:/home/alex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/alex/.krew/bin
+  /Users/alex/.cargo/bin:/Users/alex/go/bin:/usr/local/opt/make/libexec/gnubin:/usr/local/sbin:/opt/local/bin:/usr/local/opt/curl/bin:/usr/local/opt/ruby/bin:/usr/local/lib/ruby/gems/2.6.0:/Users/alex/.yarn/bin:/Users/alex:/Users/alex/bin:/Users/alex/go/bin:/usr/local/lib/ruby/gems/2.6.0:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/opt/puppetlabs/bin:/opt/puppetlabs/pdk/bin:/usr/local/MacGPG2/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Library/TeX/texbin:/Users/alex/.cargo/bin:/Users/alex/go/bin:/usr/local/opt/make/libexec/gnubin:/usr/local/sbin:/opt/local/bin:/Users/alex:/Users/alex/bin:/Users/alex/miniconda3/condabin:/usr/local/kubebuilder/bin:/usr/local/opt/inetutils/libexec/gnubin:/Users/alex/.kube/plugins/jordanwilson230:/usr/local/kubebuilder/bin:/usr/local/opt/inetutils/libexec/gnubin:/Users/alex/.kube/plugins/jordanwilson230
 
 Yarn version: 
   1.22.0
 
 Node version: 
-  12.18.2
+  12.7.0
 
 Platform: 
-  linux x64
+  darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@rdf-data-model: Request "https://registry.yarnpkg.com/@rdf-data-model" returned a 405
-      at Request.params.callback [as _callback] (/home/alex/.fnm/node-versions/v13.5.0/installation/lib/node_modules/yarn/lib/cli.js:66984:18)
-      at Request.self.callback (/home/alex/.fnm/node-versions/v13.5.0/installation/lib/node_modules/yarn/lib/cli.js:140727:22)
-      at Request.emit (events.js:315:20)
-      at Request.<anonymous> (/home/alex/.fnm/node-versions/v13.5.0/installation/lib/node_modules/yarn/lib/cli.js:141699:10)
-      at Request.emit (events.js:315:20)
-      at IncomingMessage.<anonymous> (/home/alex/.fnm/node-versions/v13.5.0/installation/lib/node_modules/yarn/lib/cli.js:141621:12)
-      at Object.onceWrapper (events.js:421:28)
-      at IncomingMessage.emit (events.js:327:22)
-      at endReadableNT (_stream_readable.js:1221:12)
-      at processTicksAndRejections (internal/process/task_queues.js:84:21)
+  Error: https://registry.yarnpkg.com/@types%2fsparqlalgebrajs: Not found
+      at Request.params.callback [as _callback] (/Users/alex/.yarn/lib/cli.js:66975:18)
+      at Request.self.callback (/Users/alex/.yarn/lib/cli.js:140727:22)
+      at Request.emit (events.js:203:13)
+      at Request.<anonymous> (/Users/alex/.yarn/lib/cli.js:141699:10)
+      at Request.emit (events.js:203:13)
+      at IncomingMessage.<anonymous> (/Users/alex/.yarn/lib/cli.js:141621:12)
+      at Object.onceWrapper (events.js:291:20)
+      at IncomingMessage.emit (events.js:208:15)
+      at endReadableNT (_stream_readable.js:1161:12)
+      at processTicksAndRejections (internal/process/task_queues.js:77:11)
 
 npm manifest: 
   {
@@ -44,6 +44,7 @@ npm manifest:
       "prepublishOnly": "yarn run build"
     },
     "dependencies": {
+      "@rdfjs/data-model": "^1.1.2",
       "bunyan": "^1.8.14",
       "chalk": "^4.1.0",
       "commander": "^6.0.0",

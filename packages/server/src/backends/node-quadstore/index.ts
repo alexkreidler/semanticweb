@@ -1,18 +1,18 @@
 import memdown from "memdown"
-import quadstore from "quadstore"
+import { RdfStore } from "quadstore"
 import SparqlEngine from "quadstore-sparql"
 import rdfParser, { RdfParser } from "rdf-parse"
 import fs from "fs"
 import { Backend } from "../../api/services"
-import { LOADIPHLPAPI } from "dns"
 
 export class QuadStore implements Backend {
-    private store: quadstore.RdfStore
+    private store: RdfStore
     initialize() {
         const opts = {
+            backend: memdown(),
             dataFactory: require("@rdfjs/data-model"),
         }
-        this.store = new quadstore.RdfStore(memdown(), opts)
+        this.store = new RdfStore(opts)
         // const sparqlEngineInstance = new SparqlEngine(store)
 
         const path = "./data/person.jsonld"
@@ -26,14 +26,6 @@ export class QuadStore implements Backend {
 
         let rs = this.store.import(parsedStream)
         console.log(rs)
-
-        rs.on("error", console.log)
-        rs.on("end", () => {
-            console.log(rs)
-
-            // rs.unpipe()
-        })
-        rs.pause()
 
         return
     }
