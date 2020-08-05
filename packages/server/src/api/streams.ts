@@ -45,4 +45,9 @@ export class DuplexObjStream<T> extends (stream.Duplex as any) {
     write(object: T, cb?: (error: Error | null | undefined) => void): boolean {
         return super.write(object, cb)
     }
+
+    on(event: "data", listener: (obj: T) => void): this {
+        super.on("data", listener)
+        return this
+    }
 }

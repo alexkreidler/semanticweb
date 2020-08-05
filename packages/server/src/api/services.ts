@@ -1,7 +1,10 @@
 // Use Rust-style explicit error handling
-import { ok, err, ResultAsync, Result } from "neverthrow"
+import { Ok, Err, Result } from "ts-results"
+import { Pub, Sub } from "./pubsub"
+import { Message } from "./messages"
 // import { Writable } from "stream"
 // import { TripleSink } from "./broker"
+export type AResult<T, E> = Promise<Result<T, E>>
 
 type Empty = {}
 
@@ -10,9 +13,15 @@ type IOErrror = {}
 type ConfigError = {}
 
 interface CommonComponent {
-    start(): ResultAsync<{}, {}>
-    stop(): ResultAsync<{}, {}>
+    start(): AResult<{}, {}>
+    stop(): AResult<{}, {}>
 }
+
+export type MessagePub = Pub<Message, void>
+export type MessageSub = Sub<Message, void>
+
+export const QueriesTopic = "queries"
+export const ResponseTopic = "responses"
 
 /** API Frontend represents a specific service that will listen to a given API type (e.g. GraphQL or JSON-LD)
  * They accept a standardized configuration format describing
@@ -32,7 +41,11 @@ export interface APIFrontend<C> extends CommonComponent {
      * - JSON-LD to RDF streaming - yes, benefit to node Streams
      * - JSON-LD fetch one node - not much benefit, also needs to return result
      */
-    // tripleSink: TripleSink
+    /** The Query Broker is used to send Queries (and Mutations) to the Backend(s) */
+    queryBroker: MessagePub
+
+    /**The Response broker is used by the Primary Backend to send canonical Responses to the frontend */
+    responseBroker: MessageSub
 }
 
 /**
@@ -50,4 +63,6 @@ export interface DynamicServer extends CommonComponent {
 // We may want to implement rdf-js Store
 export interface Backend extends CommonComponent {
     name: string
+    queryBroker: MessageSub
+    responseBroker: MessagePub
 }
