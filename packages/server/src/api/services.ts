@@ -1,20 +1,20 @@
 // Use Rust-style explicit error handling
-import { Ok, Err, Result } from "ts-results"
+import { Result } from "ts-results"
 import { Pub, Sub } from "./pubsub"
 import { Message } from "./messages"
 // import { Writable } from "stream"
 // import { TripleSink } from "./broker"
 export type AResult<T, E> = Promise<Result<T, E>>
 
-type Empty = {}
+type Empty = undefined
 
-type IOErrror = {}
+type ConfigError = undefined
 
-type ConfigError = {}
+type Error = Record<string, unknown>
 
 interface CommonComponent {
-    start(): AResult<{}, {}>
-    stop(): AResult<{}, {}>
+    start(): AResult<undefined, Error>
+    stop(): AResult<undefined, Error>
 }
 
 export type MessagePub = Pub<Message, void>

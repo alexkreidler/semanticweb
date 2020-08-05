@@ -3,8 +3,14 @@ import { InMemoryPubSub } from "../../api/pubsub"
 import { Message } from "../../api/messages"
 import { ResponseTopic } from "../../api/services"
 
+// present is browser polyfill for the same
+// import present from "present"
+import { performance } from "perf_hooks"
+const present = performance.now
+
 test("can create quadstore backend", async () => {
-    let qs = new QuadStore()
+    const a = present()
+    const qs = new QuadStore()
     const qb = new InMemoryPubSub<Message>()
     const rb = new InMemoryPubSub<Message>()
     qs.queryBroker = qb
@@ -21,12 +27,13 @@ test("can create quadstore backend", async () => {
         "./data/person.jsonld",
     ]
 
-    let res = await qs.start()
+    const res = await qs.start()
     expect(res.err).toBe(false)
-    console.log("Result from start", res)
-    let sr = await qs.stop()
-    console.log(sr)
+
+    const _ = await qs.stop()
     expect.assertions(1)
-    // qs = undefined
-    console.log("final")
+
+    console.log("completed")
+    const b = present()
+    console.log("Time difference", b - a)
 })
