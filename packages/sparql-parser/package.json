@@ -1,0 +1,23 @@
+{
+  "name": "@semanticweb/sparql-parser",
+  "version": "1.0.0",
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn run clean && yarn run compile",
+    "clean": "rm -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "watch": "tsc -w -p tsconfig.build.json",
+    "prepublishOnly": "yarn run build"
+  },
+  "dependencies": {
+    "chevrotain": "^7.0.1",
+    "millan": "^4.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}

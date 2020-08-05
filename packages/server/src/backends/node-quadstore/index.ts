@@ -60,8 +60,8 @@ export class QuadStore implements Backend {
 
                 const sparql = toSparqlJs(d.op)
                 console.log("got sparql", sparql)
-                // const sparqlText = toSparql(d.op)
-                // console.log("got sparql", sparqlText)
+                const sparqlText = toSparql(d.op)
+                console.log("got sparql", sparqlText)
 
                 // const res = await this.store.sparqlStream(sparqlText)
                 // console.log("got sparql result", res)
