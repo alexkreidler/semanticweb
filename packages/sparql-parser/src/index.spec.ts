@@ -1,4 +1,4 @@
-import { sparqlParser } from "./index"
+import { sparqlParser, parse } from "./index"
 
 test("can use millan parser", () => {
     const res = sparqlParser.tokenize(`
@@ -10,4 +10,12 @@ test("can use millan parser", () => {
     console.log(res)
 
     expect(res).toBeDefined()
+})
+
+test("can parse basic query", () => {
+    const q = `SELECT * WHERE {
+        ?s ?p ?o
+      }`
+
+    parse(q)
 })

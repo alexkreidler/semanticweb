@@ -14,10 +14,11 @@
     "prepublishOnly": "yarn run build"
   },
   "dependencies": {
-    "chevrotain": "^7.0.1",
-    "millan": "^4.1.1"
+    "millan": "^4.1.1",
+    "sparqljs": "^3.0.3"
   },
   "devDependencies": {
+    "@types/sparqljs": "^3.0.1",
     "typescript": "^3.8.3"
   }
 }

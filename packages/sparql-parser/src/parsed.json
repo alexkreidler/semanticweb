@@ -1,0 +1,325 @@
+{
+    "name": "Query",
+    "children": {
+        "SelectQuery": [
+            {
+                "name": "SelectQuery",
+                "children": {
+                    "SelectClause": [
+                        {
+                            "name": "SelectClause",
+                            "children": {
+                                "SELECT": [
+                                    {
+                                        "image": "SELECT",
+                                        "startOffset": 0,
+                                        "endOffset": 5,
+                                        "startLine": 1,
+                                        "endLine": 1,
+                                        "startColumn": 1,
+                                        "endColumn": 6,
+                                        "tokenTypeIdx": 26,
+                                        "tokenType": {
+                                            "PATTERN": {},
+                                            "tokenTypeIdx": 26,
+                                            "CATEGORIES": [],
+                                            "categoryMatches": [],
+                                            "categoryMatchesMap": {},
+                                            "tokenName": "SELECT",
+                                            "isParent": false,
+                                            "LONGER_ALT": {
+                                                "PATTERN": {},
+                                                "tokenTypeIdx": 25,
+                                                "CATEGORIES": [],
+                                                "categoryMatches": [],
+                                                "categoryMatchesMap": {},
+                                                "tokenName": "UNKNOWN",
+                                                "isParent": false
+                                            }
+                                        }
+                                    }
+                                ],
+                                "Star": [
+                                    {
+                                        "image": "*",
+                                        "startOffset": 7,
+                                        "endOffset": 7,
+                                        "startLine": 1,
+                                        "endLine": 1,
+                                        "startColumn": 8,
+                                        "endColumn": 8,
+                                        "tokenTypeIdx": 156,
+                                        "tokenType": {
+                                            "PATTERN": "*",
+                                            "tokenTypeIdx": 156,
+                                            "CATEGORIES": [],
+                                            "categoryMatches": [],
+                                            "categoryMatchesMap": {},
+                                            "tokenName": "Star",
+                                            "isParent": false
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "WhereClause": [
+                        {
+                            "name": "WhereClause",
+                            "children": {
+                                "WHERE": [
+                                    {
+                                        "image": "WHERE",
+                                        "startOffset": 9,
+                                        "endOffset": 13,
+                                        "startLine": 1,
+                                        "endLine": 1,
+                                        "startColumn": 10,
+                                        "endColumn": 14,
+                                        "tokenTypeIdx": 37,
+                                        "tokenType": {
+                                            "PATTERN": {},
+                                            "tokenTypeIdx": 37,
+                                            "CATEGORIES": [],
+                                            "categoryMatches": [],
+                                            "categoryMatchesMap": {},
+                                            "tokenName": "WHERE",
+                                            "isParent": false,
+                                            "LONGER_ALT": {
+                                                "PATTERN": {},
+                                                "tokenTypeIdx": 25,
+                                                "CATEGORIES": [],
+                                                "categoryMatches": [],
+                                                "categoryMatchesMap": {},
+                                                "tokenName": "UNKNOWN",
+                                                "isParent": false
+                                            }
+                                        }
+                                    }
+                                ],
+                                "GroupGraphPattern": [
+                                    {
+                                        "name": "GroupGraphPattern",
+                                        "children": {
+                                            "LCurly": [
+                                                {
+                                                    "image": "{",
+                                                    "startOffset": 15,
+                                                    "endOffset": 15,
+                                                    "startLine": 1,
+                                                    "endLine": 1,
+                                                    "startColumn": 16,
+                                                    "endColumn": 16,
+                                                    "tokenTypeIdx": 151,
+                                                    "tokenType": {
+                                                        "PATTERN": "{",
+                                                        "tokenTypeIdx": 151,
+                                                        "CATEGORIES": [],
+                                                        "categoryMatches": [],
+                                                        "categoryMatchesMap": {},
+                                                        "tokenName": "LCurly",
+                                                        "isParent": false
+                                                    }
+                                                }
+                                            ],
+                                            "GroupGraphPatternSub": [
+                                                {
+                                                    "name": "GroupGraphPatternSub",
+                                                    "children": {
+                                                        "TriplesBlock": [
+                                                            {
+                                                                "name": "TriplesBlock",
+                                                                "children": {
+                                                                    "TriplesSameSubjectPath": [
+                                                                        {
+                                                                            "name": "TriplesSameSubjectPath",
+                                                                            "children": {
+                                                                                "VarOrTerm": [
+                                                                                    {
+                                                                                        "name": "VarOrTerm",
+                                                                                        "children": {
+                                                                                            "Var": [
+                                                                                                {
+                                                                                                    "name": "Var",
+                                                                                                    "children": {
+                                                                                                        "VAR1": [
+                                                                                                            {
+                                                                                                                "image": "?s",
+                                                                                                                "startOffset": 25,
+                                                                                                                "endOffset": 26,
+                                                                                                                "startLine": 2,
+                                                                                                                "endLine": 2,
+                                                                                                                "startColumn": 9,
+                                                                                                                "endColumn": 10,
+                                                                                                                "tokenTypeIdx": 22,
+                                                                                                                "tokenType": {
+                                                                                                                    "PATTERN": {},
+                                                                                                                    "tokenTypeIdx": 22,
+                                                                                                                    "CATEGORIES": [],
+                                                                                                                    "categoryMatches": [],
+                                                                                                                    "categoryMatchesMap": {},
+                                                                                                                    "tokenName": "VAR1",
+                                                                                                                    "isParent": false,
+                                                                                                                    "LABEL": "?foo"
+                                                                                                                }
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                ],
+                                                                                "PropertyListPathNotEmpty": [
+                                                                                    {
+                                                                                        "name": "PropertyListPathNotEmpty",
+                                                                                        "children": {
+                                                                                            "VerbSimple": [
+                                                                                                {
+                                                                                                    "name": "VerbSimple",
+                                                                                                    "children": {
+                                                                                                        "Var": [
+                                                                                                            {
+                                                                                                                "name": "Var",
+                                                                                                                "children": {
+                                                                                                                    "VAR1": [
+                                                                                                                        {
+                                                                                                                            "image": "?p",
+                                                                                                                            "startOffset": 28,
+                                                                                                                            "endOffset": 29,
+                                                                                                                            "startLine": 2,
+                                                                                                                            "endLine": 2,
+                                                                                                                            "startColumn": 12,
+                                                                                                                            "endColumn": 13,
+                                                                                                                            "tokenTypeIdx": 22,
+                                                                                                                            "tokenType": {
+                                                                                                                                "PATTERN": {},
+                                                                                                                                "tokenTypeIdx": 22,
+                                                                                                                                "CATEGORIES": [],
+                                                                                                                                "categoryMatches": [],
+                                                                                                                                "categoryMatchesMap": {},
+                                                                                                                                "tokenName": "VAR1",
+                                                                                                                                "isParent": false,
+                                                                                                                                "LABEL": "?foo"
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                }
+                                                                                            ],
+                                                                                            "ObjectListPath": [
+                                                                                                {
+                                                                                                    "name": "ObjectListPath",
+                                                                                                    "children": {
+                                                                                                        "ObjectPath": [
+                                                                                                            {
+                                                                                                                "name": "ObjectPath",
+                                                                                                                "children": {
+                                                                                                                    "GraphNodePath": [
+                                                                                                                        {
+                                                                                                                            "name": "GraphNodePath",
+                                                                                                                            "children": {
+                                                                                                                                "VarOrTerm": [
+                                                                                                                                    {
+                                                                                                                                        "name": "VarOrTerm",
+                                                                                                                                        "children": {
+                                                                                                                                            "Var": [
+                                                                                                                                                {
+                                                                                                                                                    "name": "Var",
+                                                                                                                                                    "children": {
+                                                                                                                                                        "VAR1": [
+                                                                                                                                                            {
+                                                                                                                                                                "image": "?o",
+                                                                                                                                                                "startOffset": 31,
+                                                                                                                                                                "endOffset": 32,
+                                                                                                                                                                "startLine": 2,
+                                                                                                                                                                "endLine": 2,
+                                                                                                                                                                "startColumn": 15,
+                                                                                                                                                                "endColumn": 16,
+                                                                                                                                                                "tokenTypeIdx": 22,
+                                                                                                                                                                "tokenType": {
+                                                                                                                                                                    "PATTERN": {},
+                                                                                                                                                                    "tokenTypeIdx": 22,
+                                                                                                                                                                    "CATEGORIES": [],
+                                                                                                                                                                    "categoryMatches": [],
+                                                                                                                                                                    "categoryMatchesMap": {},
+                                                                                                                                                                    "tokenName": "VAR1",
+                                                                                                                                                                    "isParent": false,
+                                                                                                                                                                    "LABEL": "?foo"
+                                                                                                                                                                }
+                                                                                                                                                            }
+                                                                                                                                                        ]
+                                                                                                                                                    }
+                                                                                                                                                }
+                                                                                                                                            ]
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                ]
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    ]
+                                                                                                                }
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "RCurly": [
+                                                {
+                                                    "image": "}",
+                                                    "startOffset": 40,
+                                                    "endOffset": 40,
+                                                    "startLine": 3,
+                                                    "endLine": 3,
+                                                    "startColumn": 7,
+                                                    "endColumn": 7,
+                                                    "tokenTypeIdx": 152,
+                                                    "tokenType": {
+                                                        "PATTERN": "}",
+                                                        "tokenTypeIdx": 152,
+                                                        "CATEGORIES": [],
+                                                        "categoryMatches": [],
+                                                        "categoryMatchesMap": {},
+                                                        "tokenName": "RCurly",
+                                                        "isParent": false
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "SolutionModifier": [
+                        {
+                            "name": "SolutionModifier",
+                            "children": {}
+                        }
+                    ]
+                }
+            }
+        ],
+        "ValuesClause": [
+            {
+                "name": "ValuesClause",
+                "children": {}
+            }
+        ]
+    }
+}
