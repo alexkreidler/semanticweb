@@ -5,6 +5,7 @@
             "@semanticweb/*": ["packages/*/src"]
         },
         "esModuleInterop": true,
-        "jsx": "react"
+        "jsx": "react",
+        "target": "ES2017"
     }
 }

@@ -19,7 +19,7 @@
             "type": "node",
             "name": "vscode-jest-tests-server",
             "request": "launch",
-            "args": ["--runInBand"],
+            "args": ["--no-cache", "--runInBand"],
             "cwd": "${workspaceFolder}/packages/server/",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

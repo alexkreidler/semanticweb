@@ -21,6 +21,7 @@ import { Message } from "../../api/messages"
 
 import df from "@rdfjs/data-model"
 import { EventEmitter } from "events"
+import { toSparql, toSparqlJs } from "sparqlalgebrajs"
 
 const EventEmitter2Promise = (
     ee: EventEmitter,
@@ -50,24 +51,36 @@ export class QuadStore implements Backend {
 
     async handleMessage(
         d: Message
-    ): Promise<Result<Readable, { msg: string }>> {
+    ): Promise<Result<undefined, { msg: string }>> {
+        console.log("recieved query message", d)
+
         switch (d.type) {
             case "query":
-                const res = await this.store.sparqlStream(d.op.toString())
-                if (res.type == TSResultType.VOID) {
-                    return Err({ msg: "got void result" })
-                } else if (res.type == TSResultType.BINDINGS) {
-                    return Err({ msg: "got binding result, unsupported" })
-                }
-                const iter = (res as TSRdfQuadStreamResult).iterator
-                iter.forEach((quad) => {
-                    this.responseBroker.publish(ResponseTopic, {
-                        requestID: d.requestID,
-                        type: "response",
-                        done: iter.closed,
-                        quad: quad,
-                    })
-                })
+                console.log("got query")
+
+                const sparql = toSparqlJs(d.op)
+                console.log("got sparql", sparql)
+                // const sparqlText = toSparql(d.op)
+                // console.log("got sparql", sparqlText)
+
+                // const res = await this.store.sparqlStream(sparqlText)
+                // console.log("got sparql result", res)
+
+                // if (res.type == TSResultType.VOID) {
+                //     return Err({ msg: "got void result" })
+                // } else if (res.type == TSResultType.BINDINGS) {
+                //     return Err({ msg: "got binding result, unsupported" })
+                // }
+                // const iter = (res as TSRdfQuadStreamResult).iterator
+                // iter.forEach((quad) => {
+                //     this.responseBroker.publish(ResponseTopic, {
+                //         requestID: d.requestID,
+                //         type: "response",
+                //         done: iter.closed,
+                //         quad: quad,
+                //     })
+                // })
+                return Ok(undefined)
                 // for await (const quad of iter) {
 
                 // }
@@ -86,17 +99,6 @@ export class QuadStore implements Backend {
         // const sparqlEngineInstance = new SparqlEngine(store)
 
         this.queryBroker.subscribe(QueriesTopic, this.handleMessage)
-
-        console.log("before wait")
-
-        const p = new Promise((resolve) => {
-            setTimeout(() => {
-                resolve()
-            }, 1000)
-        })
-        await p
-
-        console.log("After wait")
 
         if (this.filesToImport !== undefined) {
             let tasks: Promise<Result<undefined, { err: any }>>[] = []
