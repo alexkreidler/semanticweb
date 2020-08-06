@@ -1,0 +1,37 @@
+{
+    "type": "project",
+    "input": {
+        "type": "bgp",
+        "patterns": [
+            {
+                "subject": {
+                    "termType": "Variable",
+                    "value": "x"
+                },
+                "predicate": {
+                    "termType": "Variable",
+                    "value": "y"
+                },
+                "object": {
+                    "termType": "Variable",
+                    "value": "z"
+                },
+                "graph": {
+                    "value": ""
+                },
+                "type": "pattern"
+            }
+        ]
+    },
+    "variables": [
+        {
+            "value": "x"
+        },
+        {
+            "value": "y"
+        },
+        {
+            "value": "z"
+        }
+    ]
+}

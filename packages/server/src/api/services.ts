@@ -13,12 +13,12 @@ type ConfigError = undefined
 type Error = Record<string, unknown>
 
 interface CommonComponent {
-    start(): AResult<undefined, Error>
-    stop(): AResult<undefined, Error>
+    start(): Promise<Result<undefined, Error>>
+    stop(): Promise<Result<undefined, Error>>
 }
 
-export type MessagePub = Pub<Message, void>
-export type MessageSub = Sub<Message, void>
+// export type MessagePub = Pub<Message, void>
+// export type MessageSub = Sub<Message, void>
 
 export const QueriesTopic = "queries"
 export const ResponseTopic = "responses"
@@ -41,11 +41,9 @@ export interface APIFrontend<C> extends CommonComponent {
      * - JSON-LD to RDF streaming - yes, benefit to node Streams
      * - JSON-LD fetch one node - not much benefit, also needs to return result
      */
-    /** The Query Broker is used to send Queries (and Mutations) to the Backend(s) */
-    queryBroker: MessagePub
 
-    /**The Response broker is used by the Primary Backend to send canonical Responses to the frontend */
-    responseBroker: MessageSub
+    // Each API frontend only can have one backend
+    backend: Backend
 }
 
 /**
@@ -55,7 +53,10 @@ export interface APIFrontend<C> extends CommonComponent {
  */
 export interface DynamicServer extends CommonComponent {
     registerFrontend<C>(f: APIFrontend<C>): Result<Empty, ConfigError>
-    registerBackend(b: Backend): Result<Empty, ConfigError>
+    registerBackend(
+        frontendName: string,
+        b: Backend
+    ): Result<Empty, ConfigError>
 
     // Start and stop starts frontends and backends
 }
@@ -63,6 +64,5 @@ export interface DynamicServer extends CommonComponent {
 // We may want to implement rdf-js Store
 export interface Backend extends CommonComponent {
     name: string
-    queryBroker: MessageSub
-    responseBroker: MessagePub
+    handleMessage(d: Message): Promise<Result<Message, { msg: string }>>
 }

@@ -9688,9 +9688,8 @@ quadstore-sparql@^6.0.0:
   dependencies:
     "@comunica/actor-init-sparql-rdfjs" "^1.9.1"
 
-quadstore@beautifulinteractions/node-quadstore#devel:
+"quadstore@file:../node-quadstore":
   version "7.0.1"
-  resolved "https://codeload.github.com/beautifulinteractions/node-quadstore/tar.gz/704bb458121e3761f37cdb8cdb764ae1c242ae08"
   dependencies:
     asynciterator "^3.0.0"
     js-sorted-set "^0.6.0"

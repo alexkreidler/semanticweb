@@ -3,25 +3,17 @@ import { RdfStore } from "quadstore"
 // import SparqlEngine from "quadstore-sparql"
 import rdfParser, { RdfParser } from "rdf-parse"
 import fs from "fs"
-import {
-    Backend,
-    MessageSub,
-    MessagePub,
-    ResponseTopic,
-    QueriesTopic,
-} from "../../api/services"
+import { Backend } from "../../api/services"
 import { Result, Ok, Err } from "ts-results"
 
-import {
-    TSResultType,
-    TSRdfQuadStreamResult,
-} from "quadstore/dist-cjs/lib/types"
-import { Readable } from "stream"
-import { Message } from "../../api/messages"
+import { TSResultType } from "quadstore/dist-cjs/lib/types"
+
+import { Message, MessageType } from "../../api/messages"
 
 import df from "@rdfjs/data-model"
 import { EventEmitter } from "events"
 import { toSparql, toSparqlJs } from "sparqlalgebrajs"
+import { TSRdfQuadArrayResult } from "quadstore/lib/types"
 
 const EventEmitter2Promise = (
     ee: EventEmitter,
@@ -41,21 +33,17 @@ const EventEmitter2Promise = (
 
 export class QuadStore implements Backend {
     name = "node-quadstore"
-    queryBroker: MessageSub
-    responseBroker: MessagePub
 
     private store: RdfStore
 
     /** A list of files to import. Should contain proper file extensions so we can detect the format to use */
     filesToImport: string[]
 
-    async handleMessage(
-        d: Message
-    ): Promise<Result<undefined, { msg: string }>> {
+    async handleMessage(d: Message): Promise<Result<Message, { msg: string }>> {
         console.log("recieved query message", d)
 
         switch (d.type) {
-            case "query":
+            case MessageType.Query:
                 console.log("got query")
 
                 const sparql = toSparqlJs(d.op)
@@ -63,27 +51,21 @@ export class QuadStore implements Backend {
                 const sparqlText = toSparql(d.op)
                 console.log("got sparql", sparqlText)
 
-                // const res = await this.store.sparqlStream(sparqlText)
-                // console.log("got sparql result", res)
+                const res = await this.store.sparql(sparqlText)
+                console.log("got sparql result", res)
 
-                // if (res.type == TSResultType.VOID) {
-                //     return Err({ msg: "got void result" })
-                // } else if (res.type == TSResultType.BINDINGS) {
-                //     return Err({ msg: "got binding result, unsupported" })
-                // }
-                // const iter = (res as TSRdfQuadStreamResult).iterator
-                // iter.forEach((quad) => {
-                //     this.responseBroker.publish(ResponseTopic, {
-                //         requestID: d.requestID,
-                //         type: "response",
-                //         done: iter.closed,
-                //         quad: quad,
-                //     })
-                // })
-                return Ok(undefined)
-                // for await (const quad of iter) {
-
-                // }
+                if (res.type == TSResultType.VOID) {
+                    return Err({ msg: "got void result" })
+                } else if (res.type == TSResultType.BINDINGS) {
+                    return Err({ msg: "got binding result, unsupported" })
+                }
+                const arr = (res as TSRdfQuadArrayResult).items
+                const ret: Message = {
+                    requestID: d.requestID,
+                    quads: arr,
+                    type: MessageType.Response,
+                }
+                return Ok(ret)
                 break
 
             default:
@@ -97,8 +79,6 @@ export class QuadStore implements Backend {
         }
         this.store = new RdfStore(opts)
         // const sparqlEngineInstance = new SparqlEngine(store)
-
-        this.queryBroker.subscribe(QueriesTopic, this.handleMessage)
 
         if (this.filesToImport !== undefined) {
             let tasks: Promise<Result<undefined, { err: any }>>[] = []

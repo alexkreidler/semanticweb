@@ -1,46 +1,50 @@
 import { DynamicServer, APIFrontend, Backend } from "../api/services"
-import { ResultAsync, ok, Result, okAsync } from "neverthrow"
-import { QuadStore } from "../backends/node-quadstore"
+import { Ok, Result } from "ts-results"
 
 class SemanticServer implements DynamicServer {
     private frontends: APIFrontend<any>[] = []
-    private backends: Backend[] = []
+    // private backends: Backend[] = []
+    private mapping: { [frontend: string]: Backend }
 
     private version = "0.1.0"
 
-    registerFrontend<C>(f: APIFrontend<C>): Result<{}, {}> {
+    registerFrontend<C>(f: APIFrontend<C>): Result<undefined, undefined> {
         this.frontends.push(f)
-        return ok({})
+        return Ok(undefined)
     }
-    registerBackend(b: Backend): Result<{}, {}> {
-        this.backends.push(b)
-        return ok({})
+    registerBackend(
+        frontendName: string,
+        b: Backend
+    ): Result<undefined, undefined> {
+        this.mapping[frontendName] = b
+        return Ok(undefined)
     }
-    stop(): ResultAsync<{}, {}> {
-        for (let frontend of this.frontends) {
+    async stop(): Promise<Result<undefined, undefined>> {
+        for (const frontend of this.frontends) {
             console.log("stopping frontend", frontend.name)
-            frontend.stop()
+            await frontend.stop()
         }
-        for (const backend of this.backends) {
+        for (const backend of Object.values(this.mapping)) {
             console.log("stopping backend", backend.name)
-            backend.stop()
+            await backend.stop()
         }
-        return okAsync({})
+        return Ok(undefined)
     }
-    start(): ResultAsync<{}, {}> {
+    async start(): Promise<Result<undefined, undefined>> {
         console.log("Starting Semantic Server v" + this.version)
 
+        for (const backend of Object.values(this.mapping)) {
+            console.log("starting backend:", backend.name)
+            await backend.start()
+        }
         for (const frontend of this.frontends) {
             console.log("starting frontend:", frontend.name)
-        }
-        for (const backend of this.backends) {
-            console.log("starting backend:", backend.name)
-            backend.start()
+            frontend.backend = this.mapping[frontend.name]
+            await frontend.start()
         }
         console.log("done starting")
-        return okAsync({})
+        return Ok(undefined)
     }
 }
 
 export const BasicServer = new SemanticServer()
-BasicServer.registerBackend(new QuadStore())

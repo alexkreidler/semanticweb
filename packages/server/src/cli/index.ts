@@ -3,6 +3,7 @@ import figlet from "figlet"
 import { program } from "commander"
 
 import { BasicServer } from "../server/server"
+import { QuadStore } from "../backends/node-quadstore"
 
 console.log(
     chalk.red(
@@ -10,9 +11,10 @@ console.log(
     )
 )
 
-async function handler(arvgv) {
+async function handler(argv) {
     console.log("in handler")
 
+    BasicServer.registerBackend("http", new QuadStore())
     await BasicServer.start()
 
     console.log("after start")

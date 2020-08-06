@@ -22,19 +22,23 @@ type IRI = {
 // TODO: add prefix?
 type Match = Any | Exact
 
+export enum MessageType {
+    Query,
+    Mutation,
+    Response,
+}
+
 type Query = {
-    type: "query"
+    type: MessageType.Query
     op: Algebra.Operation
 }
 type Mutation = {
-    type: "mutation"
+    type: MessageType.Mutation
     op: Algebra.Operation
 }
 type Response = {
-    type: "response"
-    quad: Quad
-    /** After the frontend recieves done, it should end its streaming serialization and sent the result */
-    done: boolean
+    type: MessageType.Response
+    quads: Quad[]
 }
 type BaseMessage = {
     // Necessary for multiplexing reqs and resps over stream
