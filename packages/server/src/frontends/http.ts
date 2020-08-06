@@ -1,4 +1,4 @@
-import { APIFrontend } from "../api/services"
+import { APIFrontend, Backend } from "../api/services"
 import { ResultAsync } from "neverthrow"
 import bunyan from "bunyan"
 import express, { Application } from "express"
@@ -59,12 +59,15 @@ const log = bunyan.createLogger({
     level: "debug",
 })
 
-class HTTPFrontend implements APIFrontend<HTTPConfig> {
-    // tripleSink: TripleSink = new TripleSink()
-    // app: Application = undefined
+import { Result } from "ts-results"
+import { MessageType } from "../api/messages"
+import { translate } from "sparqlalgebrajs"
 
-    configure(config: HTTPConfig): { ok: true } {
-        let app = express()
+class HTTPFrontend implements APIFrontend<HTTPConfig> {
+    name: string
+    backend: Backend
+    configure(config: HTTPConfig): undefined {
+        const app = express()
 
         app.get("/", (req, res) => {
             res.send({
@@ -74,9 +77,19 @@ class HTTPFrontend implements APIFrontend<HTTPConfig> {
             })
         })
 
-        for (let resource of config.mapping) {
+        for (const resource of config.mapping) {
             log.debug(`Configuring: ${resource.name}`)
-            app.get(`/${resource.name}/`, (req, res) => {
+            app.get(`/${resource.name}/`, async (req, res) => {
+                await this.backend.handleMessage({
+                    requestID: ulid(),
+                    type: MessageType.Query,
+                    op: translate(`
+                    SELECT *
+                    WHERE {
+                        ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ${resource.type} .
+                        ?s ?p ?o
+                    }`),
+                })
                 // on response, check that the number of triples from each subject is only one
                 // this.tripleSink.write({
                 //     requestID: ulid(),
@@ -94,7 +107,16 @@ class HTTPFrontend implements APIFrontend<HTTPConfig> {
                 //     },
                 // })
             })
-            app.get(`/${resource.name}/:id`, (req, res) => {
+            app.get(`/${resource.name}/:id`, async (req, res) => {
+                await this.backend.handleMessage({
+                    requestID: ulid(),
+                    type: MessageType.Query,
+                    op: translate(`
+                    SELECT *
+                    WHERE {
+                        ${req.params.id} ?p ?o
+                    }`),
+                })
                 // this.tripleSink.write({
                 //     requestID: ulid(),
                 //     subject: {
@@ -110,12 +132,26 @@ class HTTPFrontend implements APIFrontend<HTTPConfig> {
                 // })
             })
         }
-        return { ok: true }
+        return
     }
-    start(): ResultAsync<{}, {}> {
+    start(): Promise<Result<undefined, Record<string, unknown>>> {
         throw new Error("Method not implemented.")
     }
-    stop(): ResultAsync<{}, {}> {
+    stop(): Promise<Result<undefined, Record<string, unknown>>> {
         throw new Error("Method not implemented.")
     }
+    // tripleSink: TripleSink = new TripleSink()
+    // app: Application = undefined
+
+    // configure(config: HTTPConfig): { ok: true } {
+
+    //     }
+    //     return { ok: true }
+    // }
+    // start(): ResultAsync<{}, {}> {
+    //     throw new Error("Method not implemented.")
+    // }
+    // stop(): ResultAsync<{}, {}> {
+    //     throw new Error("Method not implemented.")
+    // }
 }

@@ -1,13 +1,9 @@
 import { QuadStore } from "./index"
 import { MessageType, Message, Response } from "../../api/messages"
 
-// present is browser polyfill for the same
-// import present from "present"
-import { performance } from "perf_hooks"
 import { ulid } from "ulid"
 import { translate } from "sparqlalgebrajs"
 import { pp } from "../../utils"
-const present = performance.now
 
 describe("quadstore", () => {
     let qs: QuadStore
@@ -54,6 +50,15 @@ describe("quadstore", () => {
         const resp = r as Response
         console.log(pp(resp))
     })
+
+    /**
+     * TODO much later
+     * This memory leak issue may never be solved.
+     * 1. Use an on-disk store to see if that's the issue and see if detectFileHandles can do that
+     * 2. Do more in-depth profiling. For example, bring in a large (7mb file) into memory on every handleMessage
+     * 3. Just FIND OUT where any continuing to execute promises are
+     */
+
     afterAll((done) => {
         qs.stop().then((res) => {
             console.log(res)
