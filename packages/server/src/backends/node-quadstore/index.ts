@@ -40,8 +40,6 @@ export class QuadStore implements Backend {
     async handleMessage(d: Message): Promise<Result<Message, { msg: string }>> {
         switch (d.type) {
             case MessageType.Query:
-                const sparql = toSparqlJs(d.op)
-
                 const sparqlText = toSparql(d.op)
 
                 const res = await this.store.sparql(sparqlText)
@@ -49,7 +47,6 @@ export class QuadStore implements Backend {
                 if (res.type == TSResultType.VOID) {
                     return Err({ msg: "got void result" })
                 } else if (res.type == TSResultType.BINDINGS) {
-                    // return Err({ msg: "got binding result, unsupported" })
                     const ret: Message = {
                         requestID: d.requestID,
                         bindings: res.items,
@@ -100,12 +97,16 @@ export class QuadStore implements Backend {
 
         return Ok(undefined)
     }
-    async stop(): Promise<Result<undefined, undefined>> {
+    async stop(): Promise<Result<undefined, any>> {
         // await EventEmitter2Promise(
         //     this.store.deleteGraph(defaultGraph()),
         //     "deleting graph"
         // )
-        await this.store.close()
+        try {
+            await this.store.close()
+        } catch (err) {
+            return Err({ msg: "Failed to close store", err })
+        }
         // For some reason, even if the store variable just exists, it creates a memory leak/makes the app stay running even after a close call
         this.store = undefined
         // this.queryBroker = undefined

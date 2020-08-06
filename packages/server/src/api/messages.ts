@@ -29,20 +29,20 @@ export enum MessageType {
     Response,
 }
 
-type Query = {
+export type Query = {
     type: MessageType.Query
     op: Algebra.Operation
 }
-type Mutation = {
+export type Mutation = {
     type: MessageType.Mutation
     op: Algebra.Operation
 }
-type Response = {
+export type Response = {
     type: MessageType.Response
     quads?: Quad[]
     bindings?: TSRdfBinding[]
 }
-type BaseMessage = {
+export type BaseMessage = {
     // Necessary for multiplexing reqs and resps over stream
     requestID: string
 }
