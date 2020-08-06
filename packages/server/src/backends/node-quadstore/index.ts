@@ -21,11 +21,9 @@ const EventEmitter2Promise = (
 ): Promise<Result<undefined, { err: any }>> => {
     return new Promise((resolve) => {
         ee.on("error", (e) => {
-            console.log(`Error ${task ? "while " + task : ""}: ${e}`)
             resolve(Err({ err: e }))
         })
         ee.on("end", () => {
-            console.log(`Done ${task ? "with " + task : ""}`)
             resolve(Ok(undefined))
         })
     })
@@ -40,24 +38,24 @@ export class QuadStore implements Backend {
     filesToImport: string[]
 
     async handleMessage(d: Message): Promise<Result<Message, { msg: string }>> {
-        console.log("recieved query message", d)
-
         switch (d.type) {
             case MessageType.Query:
-                console.log("got query")
-
                 const sparql = toSparqlJs(d.op)
-                console.log("got sparql", sparql)
+
                 const sparqlText = toSparql(d.op)
-                console.log("got sparql", sparqlText)
 
                 const res = await this.store.sparql(sparqlText)
-                console.log("got sparql result", res)
 
                 if (res.type == TSResultType.VOID) {
                     return Err({ msg: "got void result" })
                 } else if (res.type == TSResultType.BINDINGS) {
-                    return Err({ msg: "got binding result, unsupported" })
+                    // return Err({ msg: "got binding result, unsupported" })
+                    const ret: Message = {
+                        requestID: d.requestID,
+                        bindings: res.items,
+                        type: MessageType.Response,
+                    }
+                    return Ok(ret)
                 }
                 const arr = (res as TSRdfQuadArrayResult).items
                 const ret: Message = {
@@ -83,8 +81,6 @@ export class QuadStore implements Backend {
         if (this.filesToImport !== undefined) {
             let tasks: Promise<Result<undefined, { err: any }>>[] = []
             for (const path of this.filesToImport) {
-                console.log(`Importing ${path}`)
-
                 const textStream = fs.createReadStream(path)
 
                 // these types should be linked + exported automatically
@@ -95,11 +91,9 @@ export class QuadStore implements Backend {
                 const rs = this.store.import(parsedStream)
                 tasks.push(EventEmitter2Promise(rs, "importing"))
             }
-            // console.log("created tasks", tasks)
 
             const res = await Promise.all(tasks)
             tasks = undefined
-            console.log("results", res)
 
             return Result.all(...res).map(() => undefined)
         }

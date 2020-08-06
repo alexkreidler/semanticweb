@@ -5,7 +5,6 @@ test("minimal reproduction of Sparql Algebra error", () => {
     // Also, it should probably be error resistant
     // VSCode debugger to the rescue
     const os = ["x", "y", "z"]
-    console.log(os)
 
     const pt = os.map((n) => ({
         termType: "Variable",
@@ -36,10 +35,9 @@ test("minimal reproduction of Sparql Algebra error", () => {
         },
         variables: pt,
     }
-    console.log(pp(op))
 
     const result = toSparql(op)
-    console.log(result)
+
     expect(result).toBeDefined()
 })
 
@@ -47,16 +45,15 @@ const pp = (i: any) => JSON.stringify(i, undefined, 2)
 
 test("algebra test 2", () => {
     const opResult = translate("SELECT * WHERE { ?x ?y ?z }")
-    console.log(pp(opResult))
+
     expect(opResult).toBeDefined()
 })
 
 test("algebra test 3", () => {
     const opResult = translate("SELECT * WHERE { ?x ?y ?z }")
-    console.log(pp(opResult))
+
     expect(opResult).toBeDefined()
 
     const result = toSparql(opResult)
     expect(result).toBeDefined()
-    console.log("final", result)
 })

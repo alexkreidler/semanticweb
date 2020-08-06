@@ -22,9 +22,7 @@ test("can query a quadstore backend manually", async () => {
         "./data/person.jsonld",
     ]
 
-    const res = await qs.start()
-    // expect(res.err).toBe(false)
-    console.log("res")
+    await qs.start()
 
     // BasicServer.registerBackend("http", new QuadStore())
 
@@ -34,6 +32,8 @@ test("can query a quadstore backend manually", async () => {
         op: translate("SELECT * WHERE { ?x ?y ?z }"),
     })
     expect(result).toBeDefined()
+
+    console.log("FINAL RESULT")
 
     console.log(pp(result))
 

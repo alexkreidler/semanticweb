@@ -2,6 +2,7 @@ import { WritableObjStream, DuplexObjStream } from "./streams"
 
 import { Algebra } from "sparqlalgebrajs"
 import { Quad } from "rdf-js"
+import { TSRdfBindingArrayResult, TSRdfBinding } from "quadstore/lib/types"
 // type Matcher = string | "ANY"
 
 type Any = {
@@ -38,7 +39,8 @@ type Mutation = {
 }
 type Response = {
     type: MessageType.Response
-    quads: Quad[]
+    quads?: Quad[]
+    bindings?: TSRdfBinding[]
 }
 type BaseMessage = {
     // Necessary for multiplexing reqs and resps over stream
