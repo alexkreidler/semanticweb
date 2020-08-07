@@ -10,12 +10,23 @@ type ConfigError = undefined
 
 type Error = Record<string, unknown>
 
+import Logger from "bunyan"
+
+export enum ComponentType {
+    Frontend = "frontend",
+    Backend = "backend",
+    Server = "server",
+}
+
 /** The CommonComponent exposes an interface for starting and stopping built-in Node components
  * that utilize I/O resources (like a server listener or database file)
  * It shouldn't be used to start or stop external components, rather may check for their availability and return an error.
  * However, where possibly, it shouldn't error and wait for a real request to be made before erroring
  */
-interface CommonComponent {
+export interface CommonComponent {
+    type: ComponentType
+    name: string
+    log: Logger
     start(): Promise<Result<undefined, Error>>
     stop(): Promise<Result<undefined, Error>>
 }
@@ -35,7 +46,7 @@ export const ResponseTopic = "responses"
  * They are responsible for translating requests from their specific API into a standardized Query format
  */
 export interface APIFrontend<C> extends CommonComponent {
-    name: string
+    type: ComponentType.Frontend
     configure(config: C): ConfigError
 
     /** This is expected to be set by the user of the API Frontend before any data arrives. It may be set after calling configure */
@@ -55,17 +66,19 @@ export interface APIFrontend<C> extends CommonComponent {
  * queries to registered backends.
  */
 export interface DynamicServer extends CommonComponent {
+    type: ComponentType.Server
     registerFrontend<C>(f: APIFrontend<C>): Result<Empty, ConfigError>
     registerBackend(
         frontendName: string,
         b: Backend
     ): Result<Empty, ConfigError>
 
+    version: string
     // Start and stop starts frontends and backends
 }
 
 // We may want to implement rdf-js Store
 export interface Backend extends CommonComponent {
-    name: string
+    type: ComponentType.Backend
     handleMessage(d: Message): Promise<Result<Message, { msg: string }>>
 }

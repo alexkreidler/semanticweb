@@ -3,7 +3,7 @@ import { RdfStore } from "quadstore"
 // import SparqlEngine from "quadstore-sparql"
 import rdfParser, { RdfParser } from "rdf-parse"
 import fs from "fs"
-import { Backend } from "../../api/services"
+import { Backend, ComponentType } from "../../api/services"
 import { Result, Ok, Err } from "ts-results"
 
 import { Message, MessageType } from "../../api/messages"
@@ -15,6 +15,7 @@ import {
     TSRdfQuadArrayResult,
     TSResultType,
 } from "quadstore/dist-cjs/lib/types"
+import Logger from "bunyan"
 
 const EventEmitter2Promise = (
     ee: EventEmitter,
@@ -31,6 +32,9 @@ const EventEmitter2Promise = (
 }
 
 export class QuadStore implements Backend {
+    type: ComponentType.Backend
+    log: Logger
+
     name = "node-quadstore"
 
     private store: RdfStore
@@ -77,6 +81,10 @@ export class QuadStore implements Backend {
         // const sparqlEngineInstance = new SparqlEngine(store)
 
         if (this.filesToImport !== undefined) {
+            this.log.info({
+                msg: "automatically importing",
+                files: this.filesToImport,
+            })
             let tasks: Promise<Result<undefined, { err: any }>>[] = []
             for (const path of this.filesToImport) {
                 const textStream = fs.createReadStream(path)
@@ -99,10 +107,6 @@ export class QuadStore implements Backend {
         return Ok(undefined)
     }
     async stop(): Promise<Result<undefined, any>> {
-        // await EventEmitter2Promise(
-        //     this.store.deleteGraph(defaultGraph()),
-        //     "deleting graph"
-        // )
         try {
             await this.store.close()
         } catch (err) {
@@ -110,8 +114,6 @@ export class QuadStore implements Backend {
         }
         // For some reason, even if the store variable just exists, it creates a memory leak/makes the app stay running even after a close call
         this.store = undefined
-        // this.queryBroker = undefined
-        // this.responseBroker = undefined
         return Ok(undefined)
     }
 }

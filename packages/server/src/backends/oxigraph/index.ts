@@ -1,4 +1,4 @@
-import { Backend } from "../../api/services"
+import { Backend, ComponentType } from "../../api/services"
 import { Result, Ok, Err } from "ts-results"
 
 import { Message, MessageType } from "../../api/messages"
@@ -6,8 +6,11 @@ import { Message, MessageType } from "../../api/messages"
 import { toSparql, toSparqlJs } from "sparqlalgebrajs"
 
 import superagent from "superagent"
+import Logger from "bunyan"
 
 export class Oxigraph implements Backend {
+    type: ComponentType.Backend
+    log: Logger
     name = "oxigraph"
     host = "0.0.0.0"
     port = 9000
@@ -24,13 +27,23 @@ export class Oxigraph implements Backend {
     async handleMessage(d: Message): Promise<Result<Message, { msg: string }>> {
         switch (d.type) {
             case MessageType.Query:
+                const reqID = d.requestID
                 const sparqlText = toSparql(d.op)
+                this.log.debug({
+                    msg: "parsed sparql text",
+                    text: sparqlText,
+                    reqID,
+                })
 
                 const resp = await superagent
                     .post(this.host + this.port.toString() + "/query")
                     .send(sparqlText)
                 const sparQLJson = resp.body
-                console.log(sparQLJson)
+                this.log.debug({
+                    msg: "recieved json",
+                    json: sparQLJson,
+                    reqID,
+                })
 
                 return undefined
                 break

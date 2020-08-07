@@ -1,12 +1,42 @@
-import { DynamicServer, APIFrontend, Backend } from "../api/services"
+import {
+    DynamicServer,
+    APIFrontend,
+    Backend,
+    ComponentType,
+    CommonComponent,
+} from "../api/services"
 import { Ok, Result } from "ts-results"
+import Logger from "bunyan"
+
+const buildLogger = (
+    parent: DynamicServer,
+    type: ComponentType,
+    name: string
+) =>
+    Logger.createLogger({
+        name: parent.name + "-" + type + "-" + name,
+        stream: process.stdout,
+        level: "debug",
+        version: parent.version,
+    })
+
+const addLogger = (parent: DynamicServer, component: CommonComponent) => {
+    component.log = buildLogger(parent, component.type, component.name)
+}
 
 class SemanticServer implements DynamicServer {
+    type: ComponentType.Server
+    name = "semanticweb"
+    log: Logger
     private frontends: APIFrontend<any>[] = []
     // private backends: Backend[] = []
     private mapping: { [frontend: string]: Backend } = {}
 
-    private version = "0.1.0"
+    version = "0.1.0"
+
+    constructor() {
+        addLogger(this, this)
+    }
 
     registerFrontend<C>(f: APIFrontend<C>): Result<undefined, undefined> {
         this.frontends.push(f)
@@ -21,28 +51,30 @@ class SemanticServer implements DynamicServer {
     }
     async stop(): Promise<Result<undefined, undefined>> {
         for (const frontend of this.frontends) {
-            console.log("stopping frontend", frontend.name)
+            this.log.info("stopping frontend", frontend.name)
             await frontend.stop()
         }
         for (const backend of Object.values(this.mapping)) {
-            console.log("stopping backend", backend.name)
+            this.log.info("stopping backend", backend.name)
             await backend.stop()
         }
         return Ok(undefined)
     }
     async start(): Promise<Result<undefined, undefined>> {
-        console.log("Starting Semantic Server v" + this.version)
+        this.log.info("Starting Semantic Server v" + this.version)
 
         for (const backend of Object.values(this.mapping)) {
-            console.log("starting backend:", backend.name)
+            this.log.info("starting backend:", backend.name)
+            addLogger(this, backend)
             await backend.start()
         }
         for (const frontend of this.frontends) {
-            console.log("starting frontend:", frontend.name)
+            this.log.info("starting frontend:", frontend.name)
             frontend.backend = this.mapping[frontend.name]
+            addLogger(this, frontend)
             await frontend.start()
         }
-        console.log("done starting")
+        this.log.info("done starting")
         return Ok(undefined)
     }
 }

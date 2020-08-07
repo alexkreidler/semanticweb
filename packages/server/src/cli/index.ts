@@ -3,7 +3,6 @@ import figlet from "figlet"
 import { program } from "commander"
 
 import { BasicServer } from "../server/server"
-import { QuadStore } from "../backends/node-quadstore"
 import { Oxigraph } from "../backends/oxigraph"
 import { HTTPFrontend } from "../frontends/http"
 
@@ -14,8 +13,6 @@ console.log(
 )
 
 async function handler(argv) {
-    console.log("in handler")
-
     BasicServer.registerBackend("http", new Oxigraph())
 
     const defaultConfig = {
@@ -30,7 +27,9 @@ async function handler(argv) {
             },
         ],
     }
-    BasicServer.registerFrontend(new HTTPFrontend(defaultConfig))
+    BasicServer.registerFrontend(
+        new HTTPFrontend(defaultConfig, BasicServer.log)
+    )
 
     await BasicServer.start()
 
@@ -48,5 +47,3 @@ program
     .action(handler)
 
 program.parse(process.argv)
-
-console.log("after parse")

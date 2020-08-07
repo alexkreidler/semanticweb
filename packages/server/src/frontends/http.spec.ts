@@ -7,6 +7,7 @@ import { Ok } from "ts-results"
 import { resolve } from "path"
 import { MessageType, Message } from "../api/messages"
 import superagent from "superagent"
+import Logger from "bunyan"
 
 describe("http server", () => {
     // Unfortunately, with this limited of a mock, any response from backend will be undefined, which will not allow the service to return real data
@@ -14,6 +15,12 @@ describe("http server", () => {
 
     let frontend
     beforeAll(async () => {
+        const debugLogger = Logger.createLogger({
+            name: "http-frontend-debug",
+            stream: process.stdout,
+            level: "debug",
+            version: "0.1.0",
+        })
         const httpConfig = {
             mapping: [
                 {
@@ -26,7 +33,7 @@ describe("http server", () => {
                 },
             ],
         }
-        frontend = new HTTPFrontend(httpConfig)
+        frontend = new HTTPFrontend(httpConfig, debugLogger)
 
         frontend.backend = MockedBackend
 

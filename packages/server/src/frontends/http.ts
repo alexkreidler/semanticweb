@@ -1,4 +1,4 @@
-import { APIFrontend, Backend } from "../api/services"
+import { APIFrontend, Backend, ComponentType } from "../api/services"
 import { ResultAsync } from "neverthrow"
 import bunyan from "bunyan"
 import express, { Application } from "express"
@@ -32,13 +32,6 @@ type HTTPConfig = {
     }
 }
 
-const log = bunyan.createLogger({
-    name: "semanticweb-server",
-    stream: process.stdout,
-    level: "debug",
-    version: "0.1.0",
-})
-
 import { Result, Ok, Err } from "ts-results"
 import { MessageType } from "../api/messages"
 import { translate } from "sparqlalgebrajs"
@@ -46,8 +39,11 @@ import { Http2SecureServer } from "http2"
 import { Server } from "net"
 
 import { prefixes as defaultPrefixes } from "@zazuko/rdf-vocabularies"
+import Logger from "bunyan"
 
 export class HTTPFrontend implements APIFrontend<HTTPConfig> {
+    type: ComponentType.Frontend
+    log: Logger
     name = "http"
     backend: Backend
     app: Application
@@ -55,7 +51,8 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
     hostname = "0.0.0.0"
     server: Server
 
-    constructor(config: HTTPConfig) {
+    constructor(config: HTTPConfig, logger: Logger) {
+        this.log = logger
         this.configure(config)
     }
 
@@ -78,7 +75,7 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
         })
 
         for (const resource of config.mapping) {
-            log.debug(`Configuring: ${resource.name}`)
+            this.log.debug(`Configuring: ${resource.name}`)
             this.app.get(`/${resource.name}/`, async (req, res) => {
                 try {
                     const query = translate(
@@ -100,14 +97,14 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
                         return
                     }
                     if (result.err) {
-                        log.error(`Error in backend: ${result.val}`)
+                        this.log.error(`Error in backend: ${result.val}`)
                         res.status(500).json({ error: result.val })
                     } else {
                         // TODO: maybe don't return the metadata like requestID. Can an attacker gain knowledge about the system based on ULIDs?
                         res.json(result.val)
                     }
                 } catch (error) {
-                    log.error(`Unhandled error: ${error}`)
+                    this.log.error(`Unhandled error: ${error}`)
                     res.status(500).json({ error: error.toString() })
                 }
             })
