@@ -91,13 +91,14 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
                         op: query,
                     })
                     if (!result) {
-                        res.json({})
+                        res.json({ error: "No result" })
                         return
                     }
                     if (result.err) {
                         log.error(`Error in backend: ${result.val}`)
                         res.status(500).json({ error: result.val })
                     } else {
+                        // TODO: maybe don't return the metadata like requestID. Can an attacker gain knowledge about the system based on ULIDs?
                         res.json(result.val)
                     }
                 } catch (error) {
