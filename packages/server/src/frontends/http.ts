@@ -151,18 +151,4 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
             })
         })
     }
-    // tripleSink: TripleSink = new TripleSink()
-    // app: Application = undefined
-
-    // configure(config: HTTPConfig): { ok: true } {
-
-    //     }
-    //     return { ok: true }
-    // }
-    // start(): ResultAsync<{}, {}> {
-    //     throw new Error("Method not implemented.")
-    // }
-    // stop(): ResultAsync<{}, {}> {
-    //     throw new Error("Method not implemented.")
-    // }
 }

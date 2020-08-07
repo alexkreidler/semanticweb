@@ -3,6 +3,7 @@ import stream from "stream"
 
 // Considered using https://github.com/mroderick/PubSubJS, but native is prolly better for performance.
 
+/* eslint-disable */
 export interface ReadableObjStream<T> extends Omit<stream.Readable, "read"> {}
 
 // Use extends (TYPE as any) to avoid compilation errors and override `Omit`-ted methods
@@ -32,7 +33,9 @@ export class WritableObjStream<T> extends (stream.Writable as any) {
     }
 }
 
-export interface DuplexObjStream<T> extends Omit<stream.Writable, "write"> {}
+/* eslint-disable */
+export interface DuplexObjStream<T>
+    extends Omit<stream.Writable, "write" | "read" | "on"> {}
 
 export class DuplexObjStream<T> extends (stream.Duplex as any) {
     constructor() {

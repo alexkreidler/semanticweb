@@ -16,7 +16,6 @@
     },
     "dependencies": {
         "@rdfjs/data-model": "^1.1.2",
-        "async-iterator-to-stream": "^1.2.0",
         "bunyan": "^1.8.14",
         "chalk": "^4.1.0",
         "commander": "^6.0.0",
@@ -25,7 +24,6 @@
         "is-promise": "^4.0.0",
         "jsonld-streaming-serializer": "^1.1.0",
         "memdown": "^5.1.0",
-        "neverthrow": "^2.7.1",
         "present": "^1.0.0",
         "quadstore": "file:/home/alex/c2/node-quadstore",
         "quadstore-sparql": "^6.0.0",
