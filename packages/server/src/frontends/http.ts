@@ -24,32 +24,11 @@ type HTTPConfig = {
     /** The mapping represents the minimal information needed to map JSON-LD nodes to HTTP endpoints */
     mapping: Resource[]
 
-    options: {
-        /** This allows for requests to mutate data to not provide appropriate @context and @type information.
-         * It assumes that the provided requests exactly conform to the mapping data types, unless other options (e.g. mutationMode: flexible are set)
-         * This is not recommended, as it likely indicates clients are not smart/json-ld clients.
-         * Additionally, it's not difficult to add one field (@type) the clients that mutate data
-         * */
-        supportNonLD: boolean
-
-        /** If enabled, this uses the rubensworks/jsonld-streaming-parser.js library, compliant with the
-         * [JSON-LD 1.1 Streaming Specification](https://w3c.github.io/json-ld-streaming/). This may allow
-         * handling large files without running out of memory. Currently, this is only supported for
-         * JSON-LD to RDF, not the other way around. Thus it only works on Mutations,
-         * not to improve performance of Queries
-         *
-         * By default, the server will send batches of the generated RDF triples to the Broker in chunks (see `tripleBufferSize`)
-         */
-        streaming: boolean
-
-        /**
-         * This integer specifies the number of RDF triples to buffer before sending. It defaults to 100 (TODO: tests)
-         *
-         * In the future, we may support other methods to reduce network congestion between this server and the database
-         */
-        tripleBufferSize: number
-
-        // TODO timeout, etc
+    prefixes?: { [prefix: string]: string }
+    options?: {
+        // We'll only add options as needed and implemented
+        port?: number
+        hostname?: string
     }
 }
 
@@ -57,19 +36,35 @@ const log = bunyan.createLogger({
     name: "semanticweb-server",
     stream: process.stdout,
     level: "debug",
+    version: "0.1.0",
 })
 
-import { Result } from "ts-results"
+import { Result, Ok, Err } from "ts-results"
 import { MessageType } from "../api/messages"
 import { translate } from "sparqlalgebrajs"
+import { Http2SecureServer } from "http2"
+import { Server } from "net"
 
-class HTTPFrontend implements APIFrontend<HTTPConfig> {
+import { prefixes as defaultPrefixes } from "@zazuko/rdf-vocabularies"
+
+export class HTTPFrontend implements APIFrontend<HTTPConfig> {
     name: string
     backend: Backend
+    app: Application
+    port = 9000
+    hostname = "0.0.0.0"
+    server: Server
     configure(config: HTTPConfig): undefined {
-        const app = express()
+        this.app = express()
+        if (config.options) {
+            config.options.hostname
+                ? (this.hostname = config.options.hostname)
+                : null
+            config.options.port ? (this.port = config.options.port) : null
+        }
+        const prefixes = config.prefixes ? config.prefixes : defaultPrefixes
 
-        app.get("/", (req, res) => {
+        this.app.get("/", (req, res) => {
             res.send({
                 about:
                     "The mapping key contains a list of all resources provided here. Go to /{name} to acceess all their members",
@@ -79,66 +74,81 @@ class HTTPFrontend implements APIFrontend<HTTPConfig> {
 
         for (const resource of config.mapping) {
             log.debug(`Configuring: ${resource.name}`)
-            app.get(`/${resource.name}/`, async (req, res) => {
-                await this.backend.handleMessage({
-                    requestID: ulid(),
-                    type: MessageType.Query,
-                    op: translate(`
+            this.app.get(`/${resource.name}/`, async (req, res) => {
+                try {
+                    const query = translate(
+                        `
                     SELECT *
                     WHERE {
                         ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ${resource.type} .
                         ?s ?p ?o
-                    }`),
-                })
-                // on response, check that the number of triples from each subject is only one
-                // this.tripleSink.write({
-                //     requestID: ulid(),
-                //     subject: {
-                //         match: "ANY",
-                //     },
-                //     predicate: {
-                //         match: "EXACT",
-                //         // true exact IRI is http://www.w3.org/1999/02/22-rdf-syntax-ns#type
-                //         value: "rdf:type",
-                //     },
-                //     object: {
-                //         match: "EXACT",
-                //         value: resource.type,
-                //     },
-                // })
+                    }`,
+                        { prefixes }
+                    )
+                    const result = await this.backend.handleMessage({
+                        requestID: ulid(),
+                        type: MessageType.Query,
+                        op: query,
+                    })
+                    if (!result) {
+                        res.json({})
+                        return
+                    }
+                    if (result.err) {
+                        log.error(`Error in backend: ${result.val}`)
+                        res.status(500).json({ error: result.val })
+                    } else {
+                        res.json(result.val)
+                    }
+                } catch (error) {
+                    log.error(`Unhandled error: ${error}`)
+                    res.status(500).json({ error: error.toString() })
+                }
             })
-            app.get(`/${resource.name}/:id`, async (req, res) => {
+            this.app.get(`/${resource.name}/:id`, async (req, res) => {
                 await this.backend.handleMessage({
                     requestID: ulid(),
                     type: MessageType.Query,
-                    op: translate(`
+                    op: translate(
+                        `
                     SELECT *
                     WHERE {
                         ${req.params.id} ?p ?o
-                    }`),
+                    }`,
+                        { prefixes }
+                    ),
                 })
-                // this.tripleSink.write({
-                //     requestID: ulid(),
-                //     subject: {
-                //         match: "EXACT",
-                //         value: req.params.id,
-                //     },
-                //     predicate: {
-                //         match: "ANY",
-                //     },
-                //     object: {
-                //         match: "ANY",
-                //     },
-                // })
             })
         }
         return
     }
-    start(): Promise<Result<undefined, Record<string, unknown>>> {
-        throw new Error("Method not implemented.")
+    async start(
+        listenCallback?: () => void
+    ): Promise<Result<undefined, Record<string, unknown>>> {
+        if (!this.app) {
+            return Err({
+                msg:
+                    "Failed to start, no app found. This means you haven't called configure()",
+            })
+        }
+        this.server = this.app.listen(this.port, this.hostname, listenCallback)
+        return Ok(undefined)
     }
-    stop(): Promise<Result<undefined, Record<string, unknown>>> {
-        throw new Error("Method not implemented.")
+    async stop(): Promise<Result<undefined, Record<string, unknown>>> {
+        if (!this.server) {
+            return Err({
+                msg:
+                    "Failed to stop, no server found. This means you haven't started the frontend",
+            })
+        }
+        return new Promise((resolve, reject) => {
+            this.server.close((err) => {
+                if (err) {
+                    resolve(Err({ err: err }))
+                }
+                resolve(undefined)
+            })
+        })
     }
     // tripleSink: TripleSink = new TripleSink()
     // app: Application = undefined
