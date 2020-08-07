@@ -39,24 +39,40 @@ describe("http server", () => {
             ],
         })
 
-        // await new Promise((resolve, rej) => {
-        //     setTimeout(() => {
-        //         resolve()
-        //     }, 1000)
-        // })
-        await frontend.start().then(() => {
-            console.log("started")
-
-            request("http://0.0.0.0:9000/book", (err, resp, body) => {
-                expect(err).toBeNil()
-                expect(resp).toBeDefined()
-
-                const res = JSON.parse(body)
-
-                expect(res ? res.error : undefined).toBeNil()
-
-                expect(MockedBackend.handleMessage).toHaveBeenCalledTimes(1)
+        await frontend
+            .start()
+            .then(() => {
+                console.log("started")
             })
-        })
+            .then(() => {
+                console.log("creating")
+
+                return new Promise((resolve, reject) =>
+                    request("http://0.0.0.0:9000/book", (err, resp, body) => {
+                        console.log("got response")
+
+                        expect(err).toBeNil()
+                        expect(resp).toBeDefined()
+
+                        const res = JSON.parse(body)
+
+                        expect(res ? res.error : undefined).toBeNil()
+
+                        expect(
+                            MockedBackend.handleMessage
+                        ).toHaveBeenCalledTimes(1)
+                        resolve()
+                    })
+                )
+            })
+            .then(
+                () =>
+                    new Promise((resolve, reject) => {
+                        console.log("stopping")
+
+                        frontend.stop().then(resolve)
+                    })
+            )
+        expect.assertions(4)
     })
 })
