@@ -6,14 +6,15 @@ import fs from "fs"
 import { Backend } from "../../api/services"
 import { Result, Ok, Err } from "ts-results"
 
-import { TSResultType } from "quadstore/dist-cjs/lib/types"
-
 import { Message, MessageType } from "../../api/messages"
 
 import df from "@rdfjs/data-model"
 import { EventEmitter } from "events"
 import { toSparql, toSparqlJs } from "sparqlalgebrajs"
-import { TSRdfQuadArrayResult } from "quadstore/lib/types"
+import {
+    TSRdfQuadArrayResult,
+    TSResultType,
+} from "quadstore/dist-cjs/lib/types"
 
 const EventEmitter2Promise = (
     ee: EventEmitter,

@@ -4,6 +4,8 @@ import { program } from "commander"
 
 import { BasicServer } from "../server/server"
 import { QuadStore } from "../backends/node-quadstore"
+import { Oxigraph } from "../backends/oxigraph"
+import { HTTPFrontend } from "../frontends/http"
 
 console.log(
     chalk.red(
@@ -14,13 +16,23 @@ console.log(
 async function handler(argv) {
     console.log("in handler")
 
-    BasicServer.registerBackend("http", new QuadStore())
+    BasicServer.registerBackend("http", new Oxigraph())
+
+    const defaultConfig = {
+        mapping: [
+            {
+                name: "person",
+                type: "schema:Person",
+            },
+            {
+                name: "book",
+                type: "schema:Book",
+            },
+        ],
+    }
+    BasicServer.registerFrontend(new HTTPFrontend(defaultConfig))
+
     await BasicServer.start()
-
-    console.log("after start")
-
-    await BasicServer.stop()
-    console.log("after cleanup")
 
     return
 }

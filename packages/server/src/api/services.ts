@@ -1,9 +1,7 @@
 // Use Rust-style explicit error handling
 import { Result } from "ts-results"
-import { Pub, Sub } from "./pubsub"
 import { Message } from "./messages"
-// import { Writable } from "stream"
-// import { TripleSink } from "./broker"
+
 export type AResult<T, E> = Promise<Result<T, E>>
 
 type Empty = undefined
@@ -12,6 +10,11 @@ type ConfigError = undefined
 
 type Error = Record<string, unknown>
 
+/** The CommonComponent exposes an interface for starting and stopping built-in Node components
+ * that utilize I/O resources (like a server listener or database file)
+ * It shouldn't be used to start or stop external components, rather may check for their availability and return an error.
+ * However, where possibly, it shouldn't error and wait for a real request to be made before erroring
+ */
 interface CommonComponent {
     start(): Promise<Result<undefined, Error>>
     stop(): Promise<Result<undefined, Error>>

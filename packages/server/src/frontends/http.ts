@@ -48,12 +48,17 @@ import { Server } from "net"
 import { prefixes as defaultPrefixes } from "@zazuko/rdf-vocabularies"
 
 export class HTTPFrontend implements APIFrontend<HTTPConfig> {
-    name: string
+    name = "http"
     backend: Backend
     app: Application
     port = 9000
     hostname = "0.0.0.0"
     server: Server
+
+    constructor(config: HTTPConfig) {
+        this.configure(config)
+    }
+
     configure(config: HTTPConfig): undefined {
         this.app = express()
         if (config.options) {

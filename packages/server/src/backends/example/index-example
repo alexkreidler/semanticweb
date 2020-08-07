@@ -1,0 +1,39 @@
+import { Backend } from "../../api/services"
+import { Result, Ok, Err } from "ts-results"
+
+import { Message, MessageType } from "../../api/messages"
+
+import { toSparql, toSparqlJs } from "sparqlalgebrajs"
+
+export class Example implements Backend {
+    name = "example"
+
+    /** A list of files to import. Should contain proper file extensions so we can detect the format to use */
+    filesToImport: string[]
+
+    async handleMessage(d: Message): Promise<Result<Message, { msg: string }>> {
+        switch (d.type) {
+            case MessageType.Query:
+                const sparqlText = toSparql(d.op)
+
+                return undefined
+                break
+
+            default:
+                break
+        }
+    }
+    async start(): Promise<Result<undefined, { err: any }>> {
+        return Ok(undefined)
+    }
+    async stop(): Promise<Result<undefined, any>> {
+        try {
+            await this.store.close()
+        } catch (err) {
+            return Err({ msg: "Failed to close store", err })
+        }
+        // For some reason, even if the store variable just exists, it creates a memory leak/makes the app stay running even after a close call
+        this.store = undefined
+        return Ok(undefined)
+    }
+}

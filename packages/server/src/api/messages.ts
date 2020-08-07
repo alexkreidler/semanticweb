@@ -1,9 +1,6 @@
-import { WritableObjStream, DuplexObjStream } from "./streams"
-
 import { Algebra } from "sparqlalgebrajs"
 import { Quad } from "rdf-js"
-import { TSRdfBindingArrayResult, TSRdfBinding } from "quadstore/lib/types"
-// type Matcher = string | "ANY"
+import { TSRdfBinding } from "quadstore/dist-cjs/lib/types"
 
 type Any = {
     match: "ANY"

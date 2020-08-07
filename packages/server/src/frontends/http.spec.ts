@@ -6,6 +6,7 @@ import request from "request"
 import { Ok } from "ts-results"
 import { resolve } from "path"
 import { MessageType, Message } from "../api/messages"
+import superagent from "superagent"
 
 describe("http server", () => {
     // Unfortunately, with this limited of a mock, any response from backend will be undefined, which will not allow the service to return real data
@@ -13,11 +14,7 @@ describe("http server", () => {
 
     let frontend
     beforeAll(async () => {
-        frontend = new HTTPFrontend()
-
-        frontend.backend = MockedBackend
-
-        frontend.configure({
+        const httpConfig = {
             mapping: [
                 {
                     name: "person",
@@ -28,7 +25,11 @@ describe("http server", () => {
                     type: "schema:Book",
                 },
             ],
-        })
+        }
+        frontend = new HTTPFrontend(httpConfig)
+
+        frontend.backend = MockedBackend
+
         await frontend.start().then(() => {
             console.log("started")
         })
@@ -39,23 +40,14 @@ describe("http server", () => {
     })
 
     test("can make a basic request, get no result error", async () => {
-        await new Promise((resolve, reject) =>
-            request("http://0.0.0.0:9000/book", (err, resp, body) => {
-                console.log("got response")
+        const out = await superagent.get("http://0.0.0.0:9000/book")
 
-                // Since we don't implement the mock besides undefined, we should get an error
-                expect(err).toBeDefined()
-                expect(resp).toBeDefined()
+        const res = out.body
 
-                const res = JSON.parse(body)
+        expect(res ? res.error : undefined).toBeDefined()
 
-                expect(res ? res.error : undefined).toBeDefined()
-
-                expect(MockedBackend.handleMessage).toHaveBeenCalledTimes(1)
-                resolve()
-            })
-        )
-        expect.assertions(4)
+        // Since we don't implement the mock besides undefined, we should get an error
+        expect.assertions(1)
     })
 
     test("gets response for pre-loaded Person objects", async () => {
@@ -70,24 +62,17 @@ describe("http server", () => {
                 )
             })
         )
-        await new Promise((resolve, reject) =>
-            request("http://0.0.0.0:9000/book", (err, resp, body) => {
-                console.log("got response")
+        const out = await superagent.get("http://0.0.0.0:9000/book")
 
-                expect(err).toBeNil()
-                expect(resp).toBeDefined()
+        const res = out.body
 
-                const res = JSON.parse(body)
+        expect(res ? res.error : undefined).toBeNil()
 
-                expect(res ? res.error : undefined).toBeNil()
+        console.log("Person", res)
 
-                console.log("Person", res)
+        expect(MockedBackend.handleMessage).toHaveBeenCalledTimes(1)
 
-                expect(MockedBackend.handleMessage).toHaveBeenCalledTimes(1)
-                resolve()
-            })
-        )
-        expect.assertions(4)
+        expect.assertions(2)
     })
 
     afterAll(async () => {

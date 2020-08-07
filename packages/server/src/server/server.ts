@@ -4,7 +4,7 @@ import { Ok, Result } from "ts-results"
 class SemanticServer implements DynamicServer {
     private frontends: APIFrontend<any>[] = []
     // private backends: Backend[] = []
-    private mapping: { [frontend: string]: Backend }
+    private mapping: { [frontend: string]: Backend } = {}
 
     private version = "0.1.0"
 
