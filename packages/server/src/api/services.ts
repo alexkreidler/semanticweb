@@ -80,5 +80,8 @@ export interface DynamicServer extends CommonComponent {
 // We may want to implement rdf-js Store
 export interface Backend extends CommonComponent {
     type: ComponentType.Backend
+
+    // TODO: allow for returning not just a TSRdfBinding which maps to an RDF/JS Term
+    // Allow for returning various fields of data (e.g. id, type, name)
     handleMessage(d: Message): Promise<Result<Message, { msg: string }>>
 }

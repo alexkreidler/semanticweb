@@ -14,7 +14,7 @@ const buildLogger = (
     name: string
 ) =>
     Logger.createLogger({
-        name: parent.name + "-" + type + "-" + name,
+        name: parent.name + "-" + type.toString() + "-" + name,
         stream: process.stdout,
         level: "debug",
         version: parent.version,
@@ -25,7 +25,7 @@ const addLogger = (parent: DynamicServer, component: CommonComponent) => {
 }
 
 class SemanticServer implements DynamicServer {
-    type: ComponentType.Server
+    type: ComponentType.Server = ComponentType.Server
     name = "semanticweb"
     log: Logger
     private frontends: APIFrontend<any>[] = []

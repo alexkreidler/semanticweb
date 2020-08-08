@@ -32,7 +32,7 @@ const EventEmitter2Promise = (
 }
 
 export class QuadStore implements Backend {
-    type: ComponentType.Backend
+    type: ComponentType.Backend = ComponentType.Backend
     log: Logger
 
     name = "node-quadstore"

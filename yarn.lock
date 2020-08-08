@@ -10725,7 +10725,7 @@ sparqljs@^3.0.0, sparqljs@^3.0.1, sparqljs@^3.0.3:
   dependencies:
     n3 "^1.5.0"
 
-sparqljson-parse@^1.5.0:
+sparqljson-parse@^1.5.0, sparqljson-parse@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/sparqljson-parse/-/sparqljson-parse-1.5.2.tgz#cd7dd60080ceae9596f35a91f68a5a300bc84e3f"
   integrity sha512-VnYzLsiha3Byb7iKr4qbwsztF7cjZFDEnJg2Z2fSbVlUOa4Pwk4cHem6SnFDBWRrOtu/N98v9/JMVRi6bQYqew==

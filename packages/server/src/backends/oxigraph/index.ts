@@ -7,13 +7,18 @@ import { toSparql, toSparqlJs } from "sparqlalgebrajs"
 
 import superagent from "superagent"
 import Logger from "bunyan"
+import { TSRdfBinding } from "quadstore/dist-cjs/lib/types"
+
+import { SparqlJsonParser } from "sparqljson-parse"
+
+const sparqlJsonParser = new SparqlJsonParser()
 
 export class Oxigraph implements Backend {
-    type: ComponentType.Backend
+    type: ComponentType.Backend = ComponentType.Backend
     log: Logger
     name = "oxigraph"
     host = "0.0.0.0"
-    port = 9000
+    port = 8000
 
     constructor(host?: string, port?: number) {
         if (host) {
@@ -22,6 +27,10 @@ export class Oxigraph implements Backend {
         if (port) {
             this.port = port
         }
+    }
+
+    get baseURL(): string {
+        return this.host + ":" + this.port.toString()
     }
 
     async handleMessage(d: Message): Promise<Result<Message, { msg: string }>> {
@@ -35,15 +44,34 @@ export class Oxigraph implements Backend {
                     reqID,
                 })
 
-                const resp = await superagent
-                    .post(this.host + this.port.toString() + "/query")
-                    .send(sparqlText)
-                const sparQLJson = resp.body
-                this.log.debug({
-                    msg: "recieved json",
-                    json: sparQLJson,
-                    reqID,
-                })
+                try {
+                    const resp = await superagent
+                        .post(this.baseURL + "/query")
+                        .accept("application/sparql-results+json")
+                        // .accept("application/turtle") //"application/n-triples")
+                        .set("Content-Type", "application/sparql-query")
+                        // .query({ query:  })
+                        .send(sparqlText)
+
+                    const sparQLJson = resp.body
+                    this.log.debug("recieved json", {
+                        json: sparQLJson,
+                        reqID,
+                    })
+
+                    const rdfBindings = sparqlJsonParser.parseJsonResults(resp.body)
+
+                    this.log.debug("rdf bindings", {
+                        rdfBindings,
+                    })
+                    return Ok({
+                        requestID: reqID,
+                        type: MessageType.Response,
+                        bindings: rdfBindings,
+                    } as Message)
+                } catch (error) {
+                    return Err({ msg: "Request error", error })
+                }
 
                 return undefined
                 break
