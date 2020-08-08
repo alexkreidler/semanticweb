@@ -1,18 +1,8 @@
-import {
-    DynamicServer,
-    APIFrontend,
-    Backend,
-    ComponentType,
-    CommonComponent,
-} from "../api/services"
+import { DynamicServer, APIFrontend, Backend, ComponentType, CommonComponent } from "../api/services"
 import { Ok, Result } from "ts-results"
 import Logger from "bunyan"
 
-const buildLogger = (
-    parent: DynamicServer,
-    type: ComponentType,
-    name: string
-) =>
+const buildLogger = (parent: DynamicServer, type: ComponentType, name: string) =>
     Logger.createLogger({
         name: parent.name + "-" + type.toString() + "-" + name,
         stream: process.stdout,
@@ -42,10 +32,7 @@ class SemanticServer implements DynamicServer {
         this.frontends.push(f)
         return Ok(undefined)
     }
-    registerBackend(
-        frontendName: string,
-        b: Backend
-    ): Result<undefined, undefined> {
+    registerBackend(frontendName: string, b: Backend): Result<undefined, undefined> {
         this.mapping[frontendName] = b
         return Ok(undefined)
     }

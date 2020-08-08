@@ -68,10 +68,7 @@ export interface APIFrontend<C> extends CommonComponent {
 export interface DynamicServer extends CommonComponent {
     type: ComponentType.Server
     registerFrontend<C>(f: APIFrontend<C>): Result<Empty, ConfigError>
-    registerBackend(
-        frontendName: string,
-        b: Backend
-    ): Result<Empty, ConfigError>
+    registerBackend(frontendName: string, b: Backend): Result<Empty, ConfigError>
 
     version: string
     // Start and stop starts frontends and backends

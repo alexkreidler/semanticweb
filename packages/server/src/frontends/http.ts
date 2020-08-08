@@ -4,8 +4,6 @@ import { JsonLdSerializer } from "jsonld-streaming-serializer"
 import express, { Application } from "express"
 import { ulid } from "ulid"
 
-import { Quad } from "rdf-js"
-
 type IRI = string
 
 // TODO: use different names? no
@@ -114,6 +112,7 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
                                 } else if (b.subj) {
                                     id = b.subj.value
                                 }
+                                // TODO: what's a normal way to represent this list
                                 return {
                                     "@id": id,
                                     link: encodeURIComponent(id),
@@ -130,6 +129,7 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
             })
             this.app.get(`/${resource.name}/:id`, async (req, res) => {
                 try {
+                    // TODO: normalize requests when the ID matches an IRI relative to the baseURL of this server
                     const id = req.params.id
                     const iri = id.startsWith("_:") ? id : `<${id}>`
                     const query = translate(
@@ -154,25 +154,23 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
                         res.status(500).json({ error: result.val })
                         return
                     }
-                    type TBinding = {
-                        results: { bindings: TSRdfBinding[] }
-                    }
                     const message = (result.val as unknown) as Response
 
-                    // const out = message.response
-
+                    // TODO: evaluate whether there's a real benefit to streaming the responses.
+                    // Likely not because the sparql query all goes into our memory
                     const mySerializer = new JsonLdSerializer({ space: "  " })
 
                     mySerializer.pipe(res)
 
                     if (message.bindings) {
                         message.bindings.forEach((b) => {
-                            let id
                             // keep in mind the predicate is already known
                             if (b.p && b.o) {
                                 // if (!(b.s.termType == "NamedNode" || b.s.termType == "BlankNode")) {
                                 //     return
                                 // }
+
+                                // TODO: maybe write user-defined type guards for RDF/JS types
                                 if (b.p.termType != "NamedNode") {
                                     return
                                 }
@@ -217,7 +215,7 @@ export class HTTPFrontend implements APIFrontend<HTTPConfig> {
                 msg: "Failed to stop, no server found. This means you haven't started the frontend",
             })
         }
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             this.server.close((err) => {
                 if (err) {
                     resolve(Err({ err: err }))

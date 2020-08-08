@@ -11,7 +11,7 @@ describe("quadstore", () => {
         qs = new QuadStore()
         qs.filesToImport = ["./data/person.jsonld"]
 
-        qs.start().then((res) => {
+        qs.start().then(() => {
             done()
         })
     })

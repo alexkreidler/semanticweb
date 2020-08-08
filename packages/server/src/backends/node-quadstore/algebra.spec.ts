@@ -10,9 +10,6 @@ test("minimal reproduction of Sparql Algebra error", () => {
         termType: "Variable",
         value: n,
     }))
-    const vs = os.map((n) => ({
-        value: n,
-    }))
     const op: Algebra.Operation = {
         type: "project",
         input: {
@@ -40,8 +37,6 @@ test("minimal reproduction of Sparql Algebra error", () => {
 
     expect(result).toBeDefined()
 })
-
-const pp = (i: any) => JSON.stringify(i, undefined, 2)
 
 test("algebra test 2", () => {
     const opResult = translate("SELECT * WHERE { ?x ?y ?z }")

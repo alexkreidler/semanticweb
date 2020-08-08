@@ -10,17 +10,11 @@ import { Message, MessageType } from "../../api/messages"
 
 import df from "@rdfjs/data-model"
 import { EventEmitter } from "events"
-import { toSparql, toSparqlJs } from "sparqlalgebrajs"
-import {
-    TSRdfQuadArrayResult,
-    TSResultType,
-} from "quadstore/dist-cjs/lib/types"
+import { toSparql } from "sparqlalgebrajs"
+import { TSRdfQuadArrayResult, TSResultType } from "quadstore/dist-cjs/lib/types"
 import Logger from "bunyan"
 
-const EventEmitter2Promise = (
-    ee: EventEmitter,
-    task?: string
-): Promise<Result<undefined, { err: any }>> => {
+const EventEmitter2Promise = (ee: EventEmitter): Promise<Result<undefined, { err: any }>> => {
     return new Promise((resolve) => {
         ee.on("error", (e) => {
             resolve(Err({ err: e }))
@@ -95,7 +89,7 @@ export class QuadStore implements Backend {
                 const parsedStream = r.parse(textStream, { path })
 
                 const rs = this.store.import(parsedStream)
-                tasks.push(EventEmitter2Promise(rs, "importing"))
+                tasks.push(EventEmitter2Promise(rs))
             }
 
             const res = await Promise.all(tasks)

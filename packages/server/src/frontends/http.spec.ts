@@ -2,9 +2,7 @@ import { HTTPFrontend } from "./http"
 
 import { Backend } from "../api/services"
 import { mock } from "jest-mock-extended"
-import request from "request"
 import { Ok } from "ts-results"
-import { resolve } from "path"
 import { MessageType, Message } from "../api/messages"
 import superagent from "superagent"
 import Logger from "bunyan"
@@ -59,7 +57,7 @@ describe("http server", () => {
 
     test("gets response for pre-loaded Person objects", async () => {
         MockedBackend.handleMessage.mockReturnValueOnce(
-            new Promise((resolve, reject) => {
+            new Promise((resolve) => {
                 resolve(
                     Ok({
                         requestID: "MOCK-01",

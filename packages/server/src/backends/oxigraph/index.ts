@@ -3,11 +3,10 @@ import { Result, Ok, Err } from "ts-results"
 
 import { Message, MessageType } from "../../api/messages"
 
-import { toSparql, toSparqlJs } from "sparqlalgebrajs"
+import { toSparql } from "sparqlalgebrajs"
 
 import superagent from "superagent"
 import Logger from "bunyan"
-import { TSRdfBinding } from "quadstore/dist-cjs/lib/types"
 
 import { SparqlJsonParser } from "sparqljson-parse"
 
@@ -72,8 +71,6 @@ export class Oxigraph implements Backend {
                 } catch (error) {
                     return Err({ msg: "Request error", error })
                 }
-
-                return undefined
                 break
 
             default:
