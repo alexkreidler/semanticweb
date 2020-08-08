@@ -38,7 +38,7 @@ import { Server } from "net"
 
 import { prefixes as defaultPrefixes } from "@zazuko/rdf-vocabularies"
 import Logger from "bunyan"
-import { TSRdfBinding } from "quadstore/dist-cjs/lib/types"
+import { TSRdfBinding } from "quadstore/dist/cjs/lib/types"
 import { quad, defaultGraph, namedNode } from "@rdfjs/data-model"
 
 export class HTTPFrontend implements APIFrontend<HTTPConfig> {

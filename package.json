@@ -4,7 +4,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "postinstall": "yarn run bootstrap",
-    "clean": "lerna run clean && lerna clean # removes built artifacts and node_modules",
+    "clean": "lerna run clean && lerna clean && rm -rf node_modules",
     "build": "lerna run build",
     "pub": "lerna publish"
   },

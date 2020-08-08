@@ -11,7 +11,7 @@ import { Message, MessageType } from "../../api/messages"
 import df from "@rdfjs/data-model"
 import { EventEmitter } from "events"
 import { toSparql } from "sparqlalgebrajs"
-import { TSRdfQuadArrayResult, TSResultType } from "quadstore/dist-cjs/lib/types"
+import { TSRdfQuadArrayResult, TSResultType } from "quadstore/dist/cjs/lib/types"
 import Logger from "bunyan"
 
 const EventEmitter2Promise = (ee: EventEmitter): Promise<Result<undefined, { err: any }>> => {

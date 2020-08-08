@@ -1,6 +1,6 @@
 import { Algebra } from "sparqlalgebrajs"
 import { Quad } from "rdf-js"
-import { TSRdfBinding } from "quadstore/dist-cjs/lib/types"
+import { TSRdfBinding } from "quadstore"
 
 type Any = {
     match: "ANY"
@@ -44,5 +44,7 @@ export type BaseMessage = {
     requestID: string
 }
 
+// TODO: just have Request and Response types: there's no real reason now that the interface is just a function call
+// to have it in one data structure.
 type RequestMessage = Query | Mutation | Response
 export type Message = BaseMessage & RequestMessage
