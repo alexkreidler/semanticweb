@@ -1,0 +1,197 @@
+address: {
+    f.address.zipCode()
+    f.address.city()
+    f.address.cityPrefix()
+    f.address.citySuffix()
+    f.address.streetName()
+    f.address.streetAddress()
+    f.address.streetSuffix()
+    f.address.streetPrefix()
+    f.address.secondaryAddress()
+    f.address.county()
+    f.address.country()
+    f.address.countryCode()
+    f.address.state()
+    f.address.stateAbbr()
+    f.address.latitude()
+    f.address.longitude()
+};
+
+commerce: {
+    f.commerce.color()
+    f.commerce.department()
+    f.commerce.productName()
+    f.commerce.price()
+    f.commerce.productAdjective()
+    f.commerce.productMaterial()
+    f.commerce.product()
+};
+
+company: {
+    f.company.suffixes
+    f.company.companyName
+    f.company.companySuffix
+    f.company.catchPhrase
+    f.company.bs
+    f.company.catchPhraseAdjective
+    f.company.catchPhraseDescriptor
+    f.company.catchPhraseNoun
+    f.company.bsAdjective
+    f.company.bsBuzz
+    f.company.bsNoun
+};
+
+database: {
+    d.database.column
+    d.database.type
+    d.database.collation
+    d.database.engine
+};
+
+date: {
+    past(years?: number, refDate?: string|Date)
+    future(years?: number, refDate?: string|Date)
+    between(from: string|number|Date, to: string|Date)
+    recent(days?: number)
+    month(options?: { abbr?: boolean, context?: boolean })
+    weekday(options?: { abbr?: boolean, context?: boolean })
+};
+
+fake(str: string)
+
+finance: {
+    account(length?: number)
+    accountName()
+    mask(length?: number, parens?: boolean, elipsis?: boolean)
+    amount(min?: number, max?: number, dec?: number, symbol?: string)
+    transactionType()
+    currencyCode()
+    currencyName()
+    currencySymbol()
+    bitcoinAddress()
+    iban(formatted?: boolean)
+    bic()
+};
+
+hacker: {
+    abbreviation()
+    adjective()
+    noun()
+    verb()
+    ingverb()
+    phrase()
+};
+
+helpers: {
+    randomize<T>(array: T[])
+    randomize()
+    slugify(string?: string)
+    replaceSymbolWithNumber(string?: string, symbol?: string)
+    replaceSymbols(string?: string)
+    shuffle<T>(o: T[])
+    shuffle()
+    mustache(str: string, data: { [key: string]: string|((substring: string, ...args: any[]) => string) })
+    createCard()
+    contextualCard()
+    userCard()
+    createTransaction()
+};
+
+image: {
+    image()
+    avatar()
+    imageUrl(width?: number, height?: number, category?: string, randomize?: boolean, https?: boolean)
+    abstract(width?: number, height?: number)
+    animals(width?: number, height?: number)
+    business(width?: number, height?: number)
+    cats(width?: number, height?: number)
+    city(width?: number, height?: number)
+    food(width?: number, height?: number)
+    nightlife(width?: number, height?: number)
+    fashion(width?: number, height?: number)
+    people(width?: number, height?: number)
+    nature(width?: number, height?: number)
+    sports(width?: number, height?: number)
+    technics(width?: number, height?: number)
+    transport(width?: number, height?: number)
+    dataUri(width?: number, height?: number)
+};
+
+internet: {
+    avatar()
+    email(firstName?: string, lastName?: string, provider?: string)
+    exampleEmail(firstName?: string, lastName?: string)
+    userName(firstName?: string, lastName?: string)
+    protocol()
+    url()
+    domainName()
+    domainSuffix()
+    domainWord()
+    ip()
+    ipv6()
+    userAgent()
+    color(baseRed255?: number, baseGreen255?: number, baseBlue255?: number)
+    mac()
+    password(len?: number, memorable?: boolean, pattern?: string|RegExp, prefix?: string)
+};
+
+lorem: {
+    word()
+    words(num?: number)
+    sentence(wordCount?: number, range?: number)
+    slug(wordCount?: number)
+    sentences(sentenceCount?: number)
+    paragraph(sentenceCount?: number)
+    paragraphs(paragraphCount?: number, separator?: string)
+    text(times?: number)
+    lines(lineCount?: number)
+};
+
+name: {
+    f.name.firstName
+    f.name.lastName
+    f.name.findName
+    f.name.jobTitle
+    f.name.prefix
+    f.name.suffix
+    f.name.title
+    f.name.jobDescriptor
+    f.name.jobArea
+    f.name.jobType
+};
+
+phone: {
+    phoneNumber(format?: string)
+    phoneNumberFormat(phoneFormatsArrayIndex?: number)
+    phoneFormats()
+};
+
+random: {
+    number(max?: number)
+    number(options?: { min?: number, max?: number, precision?: number })
+    arrayElement()
+    arrayElement<T>(array: T[])
+    arrayElement<T>(array: ReadonlyArray<T>)
+    objectElement(object?: { [key: string]: any }, field?: "key")
+    objectElement<T>(object?: { [key: string]: T }, field?: any)
+    uuid()
+    boolean()
+    word(type?: string)
+    words(count?: number)
+    image()
+    locale()
+    alphaNumeric(count?: number)
+};
+
+system: {
+    fileName(ext?: string, type?: string)
+    commonFileName(ext: string, type?: string)
+    mimeType()
+    commonFileType()
+    commonFileExt()
+    fileType()
+    fileExt(mimeType: string)
+    directoryPath()
+    filePath()
+    semver()
+};
