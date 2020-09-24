@@ -1,6 +1,7 @@
 {
     "@context": "https://schema.org",
     "@type": "Person",
+    "@id": "http://example.com/Jane-Doe",
     "address": {
         "@type": "PostalAddress",
         "addressLocality": "Colorado Springs",
@@ -8,10 +9,7 @@
         "postalCode": "80840",
         "streetAddress": "100 Main Street"
     },
-    "colleague": [
-        "http://www.example.com/JohnColleague.html",
-        "http://www.example.com/JameColleague.html"
-    ],
+    "colleague": ["http://www.example.com/JohnColleague.html", "http://www.example.com/JameColleague.html"],
     "email": "info@example.com",
     "image": "janedoe.jpg",
     "jobTitle": "Research Assistant",
@@ -31,5 +29,36 @@
         "http://twitter.com/",
         "http://instagram.com/",
         "https://plus.google.com/"
-    ]
+    ],
+    "worksFor": {
+        "@type": "Organization",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Paris, France",
+            "postalCode": "F-75002",
+            "streetAddress": "38 avenue de l'Opera"
+        },
+        "email": "secretariat(at)google.org",
+        "faxNumber": "( 33 1) 42 68 53 01",
+        "member": [
+            {
+                "@type": "Organization"
+            },
+            {
+                "@type": "Organization"
+            }
+        ],
+        "alumni": [
+            {
+                "@type": "Person",
+                "name": "Jack Dan"
+            },
+            {
+                "@type": "Person",
+                "name": "John Smith"
+            }
+        ],
+        "name": "Google.org (GOOG)",
+        "telephone": "( 33 1) 42 68 53 00"
+    }
 }
