@@ -24,11 +24,11 @@ describe("Dereference tests", () => {
         person = await parseJSON(filename)
         expect(person).toBeDefined()
     })
-    test("prior", async () => {
+    test("priorities", async () => {
         console.log(await rdfSerializer.getContentTypesPrioritized())
     })
 
-    test("hey", async () => {
+    test("deref, flatten, frame to specific props", async () => {
         // const rDeref = new RdfDereferencer({})
         const rDDeref = rDeref as RdfDereferencer
         const { quads } = await rDDeref.dereference("https://schema.org/Person")
@@ -36,23 +36,29 @@ describe("Dereference tests", () => {
 
         const textStream = rdfSerializer.serialize(quads, { contentType: "application/ld+json" }) //"application/n-quads" })
 
-        // Handle the serialization in the streaming manner
-        // const comp = new Promise<string>((resolve, reject) => {
-        //     textStream.pipe(process.stdout)
-
-        //     textStream.on("error", (error) => reject(error)).on("end", () => resolve("All done!"))
-        // })
-        // const out = await comp
-        // console.log(out)
-
         const out = await stream2String(textStream)
-        console.log(out)
 
-        // const store = await storeStream(quads)
-        // let re = /.*/
-        // const out = store.match(re, re, re, re)
+        const obj = JSON.parse(out)
+        const flat = await jsonld.flatten(obj, {})
+        console.log(prettyPrint(flat))
 
-        // Now you can do quad pattern queries over the stream, such as getting all triples having 'http://example.org/subject' as subject.
-        // const resultStream = store.match(dataFactory.namedNode("http://example.org/subject"))
+        const framed = await jsonld.frame(
+            flat,
+            {
+                "@context": {
+                    rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+                },
+                "@id": ["http://schema.org/worksFor", "http://schema.org/vatID"],
+                "rdfs:label": {},
+                "rdfs:comment": {},
+            },
+            {
+                explicit: true,
+            }
+        )
+        console.log(prettyPrint(framed))
+
+        // const compacted = await jsonld.compact(framed, {})
+        // console.log(prettyPrint(compacted))
     })
 })
