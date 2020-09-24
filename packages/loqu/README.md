@@ -44,6 +44,16 @@ Some of the features described above, including literal validation and schema ba
 
 _How do we deal with some JSON-LD and a link to a data node IRI that needs to be included in the object_
 
+### Builtin/Generic Web Components
+
+JSON-LD frames provide a great way to format data that we know a little about ahead of time. However, when we're trying to render a fully generic Linked Data browser that has no inherent knowledge of the data, we need another option.
+
+This is implemented in the `GenericNode.tsx` file. What we want is:
+
+-   compact the input data so that every field is an absolute IRI
+-   use `rdf-dereference` to dereference the rdf:type field. At least for schema.org, this pulls in both the data about the class itself, but also data on its properties, which we are about to render. If we had to dereference every field in a separate request, we could parallelize it but it would still be pretty slow
+-   then we iterate over the object and get the fields/properties that have only single values or array values. We then render those in their object order on the page. To render more detail about the property itself, we try to render the `rdfs:label`. On hover, we render `rdfs:comment` If none are available, we have a function try to determine the field name (this could be a case for non-compacted input). How to get access to the property triples: either JSON-LD or direct triple store access
+
 ## Advanced Data Processsing
 
 In general, most of the processes described below use the same internal model (e.g. recursive). We provide a consistent API, similar to the middleware next() function, which indicates the completion of processing on one node and allows lower nodes to process.
