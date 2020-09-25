@@ -96,3 +96,5 @@ export async function runSingleFunc<T>(sf: SemanticFunction<T>, data: JsonLd): P
     const output = sf.func(framed)
     return output
 }
+
+export * from "./genericHelpers"

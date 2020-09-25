@@ -2,8 +2,8 @@ import { RdfDereferencer } from "rdf-dereference"
 
 import rDeref from "rdf-dereference"
 
-import { storeStream } from "rdf-store-stream"
-import { DataFactory } from "rdf-data-factory"
+// import { storeStream } from "rdf-store-stream"
+// import { DataFactory } from "rdf-data-factory"
 
 import { parseJSON, prettyPrint, stream2String } from "./utils"
 

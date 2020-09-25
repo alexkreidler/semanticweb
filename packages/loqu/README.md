@@ -54,6 +54,11 @@ This is implemented in the `GenericNode.tsx` file. What we want is:
 -   use `rdf-dereference` to dereference the rdf:type field. At least for schema.org, this pulls in both the data about the class itself, but also data on its properties, which we are about to render. If we had to dereference every field in a separate request, we could parallelize it but it would still be pretty slow
 -   then we iterate over the object and get the fields/properties that have only single values or array values. We then render those in their object order on the page. To render more detail about the property itself, we try to render the `rdfs:label`. On hover, we render `rdfs:comment` If none are available, we have a function try to determine the field name (this could be a case for non-compacted input). How to get access to the property triples: either JSON-LD or direct triple store access
 
+1. compact(input, {})
+2. getProperties(input[@type], every string or array field in input)
+3. render data from above 2
+4. render nested objects by simply passing into GenericNode again
+
 ## Advanced Data Processsing
 
 In general, most of the processes described below use the same internal model (e.g. recursive). We provide a consistent API, similar to the middleware next() function, which indicates the completion of processing on one node and allows lower nodes to process.

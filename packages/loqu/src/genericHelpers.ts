@@ -8,7 +8,7 @@ import { prettyPrint, stream2String } from "./utils"
 import * as jsonld from "jsonld"
 
 import rdfSerializer from "rdf-serialize"
-import { JsonLd } from "jsonld/jsonld-spec"
+import { JsonLd, JsonLdObj } from "jsonld/jsonld-spec"
 
 export async function dereferenceToFlatJsonLD(iri: string): Promise<JsonLd> {
     const rDDeref = rDeref as RdfDereferencer
@@ -24,11 +24,15 @@ export async function dereferenceToFlatJsonLD(iri: string): Promise<JsonLd> {
 }
 
 /** Returns a graph containing the IRIs and details (via a JSON-LD Frame) about a provided set of properties on a given class */
-export async function getProperties(classIRI: string, requestedProperties: [string], frame?: object): Promise<JsonLd> {
+export async function getProperties(
+    classIRI: string,
+    requestedProperties: [string],
+    frame?: object
+): Promise<[JsonLdObj]> {
     const flat = await dereferenceToFlatJsonLD(classIRI)
     console.log(prettyPrint(flat))
 
-    if ("@id" in frame) {
+    if (frame && "@id" in frame) {
         console.error("The provided frame should not have an ID. This function uses requestedProperties as the ID list")
     }
 
@@ -53,6 +57,13 @@ export async function getProperties(classIRI: string, requestedProperties: [stri
             explicit: true,
         }
     )
-    console.log(prettyPrint(framed))
-    return framed
+    const out = await jsonld.compact(framed, {
+        "@context": {
+            rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+            label: "rdfs:label",
+            comment: "rdfs:comment",
+        },
+    })
+    console.log(prettyPrint(out))
+    return out["@graph"]
 }
