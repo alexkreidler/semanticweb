@@ -30,6 +30,8 @@ export async function getProperties(
     frame?: object
 ): Promise<[JsonLdObj]> {
     const flat = await dereferenceToFlatJsonLD(classIRI)
+    console.log(flat)
+
     console.log(prettyPrint(flat))
 
     if (frame && "@id" in frame) {
@@ -48,22 +50,28 @@ export async function getProperties(
             : {
                   "@context": {
                       rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+                      label: "rdfs:label",
+                      comment: "rdfs:comment",
                   },
                   "@id": requestedProperties,
-                  "rdfs:label": {},
-                  "rdfs:comment": {},
+                  label: {},
+                  comment: {},
               },
         {
             explicit: true,
         }
     )
-    const out = await jsonld.compact(framed, {
-        "@context": {
-            rdfs: "http://www.w3.org/2000/01/rdf-schema#",
-            label: "rdfs:label",
-            comment: "rdfs:comment",
-        },
-    })
-    console.log(prettyPrint(out))
+    const out = framed
+
+    // await jsonld.compact(framed, {
+    //     "@context": {
+    //         rdfs: "http://www.w3.org/2000/01/rdf-schema#",
+    //         label: "rdfs:label",
+    //         comment: "rdfs:comment",
+    //     },
+    // })
+    // console.log(prettyPrint(out))
+    console.log(out)
+
     return out["@graph"]
 }

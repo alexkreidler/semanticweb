@@ -44,6 +44,20 @@ Some of the features described above, including literal validation and schema ba
 
 _How do we deal with some JSON-LD and a link to a data node IRI that needs to be included in the object_
 
+### Comparison to existing projects
+
+Several groups have already tried versions of this. There's:
+
+-   LDFlex
+-   Ontola
+-   and a bunch of old ones that don't use much JS/are for dead frameworks
+
+Main differences:
+
+-   You don't need to await every property or some values
+-   It's just a JSON object
+-   YOu get to specify the schema your code is aware of
+
 ### Builtin/Generic Web Components
 
 JSON-LD frames provide a great way to format data that we know a little about ahead of time. However, when we're trying to render a fully generic Linked Data browser that has no inherent knowledge of the data, we need another option.
