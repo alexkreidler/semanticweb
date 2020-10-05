@@ -1,7 +1,7 @@
-import { parseJSON, prettyPrint } from "./utils"
+import { parseJSON, prettyPrint } from "../src/utils"
 
 import * as jsonld from "jsonld"
-import { propertyTypeLookup } from "./validation"
+import { propertyTypeLookup } from "../src/validation"
 
 describe("data fetching", () => {
     let person

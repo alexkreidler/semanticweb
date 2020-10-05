@@ -1,6 +1,6 @@
 // Playground
 
-import { parseJSON, prettyPrint } from "./utils"
+import { parseJSON, prettyPrint } from "../src/utils"
 
 import * as jsonld from "jsonld"
 

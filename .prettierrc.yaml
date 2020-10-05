@@ -2,3 +2,8 @@ singleQuote: false
 semi: false
 tabWidth: 4
 printWidth: 120
+# overrides:
+#     - files: "*.md"
+#       options:
+#           tabWidth: 2
+#           proseWrap: never

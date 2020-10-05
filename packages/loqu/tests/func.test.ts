@@ -1,8 +1,8 @@
 // Playground
 
-import { parseJSON, prettyPrint } from "./utils"
+import { parseJSON, prettyPrint } from "../src/utils"
 
-import { createSemanticFunction, runSingleFunc } from "./index"
+import { createSemanticFunction, runSingleFunc } from "../src/index"
 
 describe("semantic functions", () => {
     let person
