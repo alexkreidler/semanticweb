@@ -2,8 +2,9 @@ import { Frame, JsonLd } from "./jsonld-types"
 
 import * as jsonld from "jsonld"
 import { Options } from "jsonld"
+import { arrCmp } from "./utils"
 
-enum Strictness {
+export enum Strictness {
     /** This just frames the data but doesn't impose any additional options */
     NoChecks,
     /** Frame strict mode enables both the Explicit Inclusion and the Require All
@@ -16,7 +17,7 @@ enum Strictness {
     /** This allows for custom validation using the shacl and other options. Not implemented */
     AdvancedValidation,
 }
-enum Conversion {
+export enum Conversion {
     None,
     /** Basic conversion converts xsd data types to JS */
     BasicConversion,
@@ -68,10 +69,35 @@ export function createSemanticFunction<T>(frame: Frame, func: SFunc<T>): Semanti
  * End API Module boundary
  */
 
-export async function runSingleFunc<T>(sf: SemanticFunction<T>, data: JsonLd): Promise<T> {
+/** FrameMap maps an input frame to a strongly typed output of the frame result. We preserve the type of context as is */
+export type FrameMap<T extends any> = {
+    [K in keyof T]: K extends "@context"
+        ? T[K]
+        : T[K] extends object
+        ? any // this handles all @embed options (e.g. a string ID vs an object)
+        : T[K] extends string
+        ? string
+        : T[K] extends object[] // This doesn't work yet
+        ? any[]
+        : unknown
+}
+
+/** typedFrame performs the JSON-LD framing operation and returns a strongly typed object.
+ * The type garuantees are only valid if certain options are provided and checks are done aterwards */
+export async function typedFrame<T extends object>(data: any, frame: T, opts?: Options.Frame): Promise<FrameMap<T>> {
+    return ((await jsonld.frame(data, frame, opts)) as unknown) as FrameMap<T>
+}
+
+export async function frameWithChecks<T extends object>(
+    data: any,
+    frame: T,
+    strictness: Strictness,
+    opts?: Options.Frame
+): Promise<FrameMap<T> | undefined> {
     /* Prepare frame options */
     let frameOpts: Options.Frame = {}
-    switch (sf.data.strictness) {
+
+    switch (strictness) {
         case Strictness.NoChecks:
             frameOpts = {}
             break
@@ -88,14 +114,25 @@ export async function runSingleFunc<T>(sf: SemanticFunction<T>, data: JsonLd): P
 
             break
     }
-    /* We merge in the explicitly provided options, setting them to override */
-    const realFrameOpts = { ...frameOpts, ...sf.data.frame.opts }
 
-    const framed = await jsonld.frame(data, sf.data.frame.spec, realFrameOpts)
+    /** For this to have strong garuantees, out strictness options need to override the provided options */
+    const realFrameOpts = { ...opts, ...frameOpts }
+    const framed = await typedFrame(data, frame, realFrameOpts)
 
-    const output = sf.func(framed)
-    return output
+    if (arrCmp(Object.keys(framed), ["@context"])) {
+        // No data was returned
+        return undefined
+    }
+
+    return framed
 }
+
+// export async function runSingleFunc<T>(sf: SemanticFunction<T>, data: JsonLd): Promise<T> {
+//     const framed = await frameWithChecks(data, sf.data.frame.spec, sf.data.strictness)
+
+//     const output = sf.func(framed)
+//     return output
+// }
 
 export * from "./genericHelpers"
 export * from "./rdfineHelpers"

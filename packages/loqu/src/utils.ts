@@ -26,3 +26,11 @@ export function stream2String(stream: NodeJS.ReadableStream, enc?: BufferEncodin
         })
     })
 }
+
+export function arrCmp<T>(a1: T[], a2: T[]): boolean {
+    var i = a1.length
+    while (i--) {
+        if (a1[i] !== a2[i]) return false
+    }
+    return true
+}
