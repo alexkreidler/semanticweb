@@ -30,6 +30,7 @@ export const toJSON = async (resource: RdfResource, frameOpts?: any): Promise<an
     }
 
     const currentItem = async (items: MinimalItem[]): Promise<any> => {
+        // TODO: add a no triples warning
         const out = await jsonld.frame(items, {
             "@id": resource.id.value,
             ...frameOpts,

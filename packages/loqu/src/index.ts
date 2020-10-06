@@ -25,7 +25,7 @@ enum Conversion {
 /**
  * API Module boundary
  */
-export type SFunc<T> = (data: JsonLd) => T
+export type SFunc<O, I = JsonLd> = (data: I) => O
 /** Do we want to make this generic over return types? */
 export type SemanticFunction<T> = {
     data: {
