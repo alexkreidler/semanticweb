@@ -98,3 +98,8 @@ export async function runSingleFunc<T>(sf: SemanticFunction<T>, data: JsonLd): P
 }
 
 export * from "./genericHelpers"
+export * from "./rdfineHelpers"
+
+export type IDNode = {
+    "@id": string
+}

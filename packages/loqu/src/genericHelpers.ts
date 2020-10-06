@@ -16,6 +16,7 @@ export async function dereferenceToFlatJsonLD(iri: string): Promise<JsonLd> {
 
     const textStream = rdfSerializer.serialize(quads, { contentType: "application/ld+json" })
 
+    // Replace with jsonld.fromRDF
     const out = await stream2String(textStream)
 
     const obj = JSON.parse(out)
@@ -74,4 +75,43 @@ export async function getProperties(
     console.log(out)
 
     return out["@graph"]
+}
+
+export type MinimumDataFormat = {}
+
+export type PrepResult = {
+    data: any
+    properties: [object]
+}
+
+// TODO: improve type safety of this
+export async function prepData(data: MinimumDataFormat): Promise<PrepResult> {
+    const out: any = await jsonld.compact(data, {})
+    console.log(out)
+
+    let regularProperties: [string?] = []
+    for (let [k, v] of Object.entries(out)) {
+        if (typeof v == "string" && !k.includes("@")) {
+            regularProperties.push(k)
+        }
+    }
+    console.log(regularProperties)
+
+    const typ = out["@type"]
+
+    if (!typ) {
+        throw new Error("No type found in compacted data")
+    }
+
+    if (regularProperties.length < 1) {
+        throw new Error("There are no simple properties here to get")
+    }
+    let rp = regularProperties as [string]
+    const properties = await getProperties(typ, rp)
+    console.log(properties)
+
+    return {
+        data: out,
+        properties,
+    }
 }
