@@ -26,23 +26,23 @@ export enum Conversion {
 /**
  * API Module boundary
  */
-export type SFunc<O, I = JsonLd> = (data: I) => O
+export type SFunc<F, T> = (data: FrameMap<F>) => T
 /** Do we want to make this generic over return types? */
-export type SemanticFunction<T> = {
+export type SemanticFunction<F extends object, T> = {
     data: {
         strictness: Strictness
         conversion: Conversion
         frame: {
-            spec: Frame
+            spec: F
             opts: Options.Frame
         }
     }
     /** In this case, the function doesn't have a return value as this
      * isn't a generation, validation, or conversion processing node */
-    func: SFunc<T>
+    func: SFunc<F, T>
 }
 
-export function defaultSemanticFunction(): SemanticFunction<void> {
+export function defaultSemanticFunction(): SemanticFunction<{}, void> {
     return {
         data: {
             // what should this default be
@@ -57,13 +57,13 @@ export function defaultSemanticFunction(): SemanticFunction<void> {
     }
 }
 
-export function createSemanticFunction<T>(frame: Frame, func: SFunc<T>): SemanticFunction<T> {
+export function createSemanticFunction<F extends object, T>(frame: F, func: SFunc<F, T>): SemanticFunction<F, T> {
     let sf = defaultSemanticFunction()
     sf.data.frame.spec = frame
     sf.func = func
     // This assertion only works because we set func to func. This needs to stay coupled with
     // this set of APIs
-    return sf as SemanticFunction<T>
+    return sf as SemanticFunction<F, T>
 }
 /**
  * End API Module boundary
@@ -110,9 +110,7 @@ export async function frameWithChecks<T extends object>(
             break
 
         default:
-            console.log("Currently other validation types have not been implemented")
-
-            break
+            throw new Error("Currently other validation types have not been implemented")
     }
 
     /** For this to have strong garuantees, out strictness options need to override the provided options */
@@ -127,12 +125,12 @@ export async function frameWithChecks<T extends object>(
     return framed
 }
 
-// export async function runSingleFunc<T>(sf: SemanticFunction<T>, data: JsonLd): Promise<T> {
-//     const framed = await frameWithChecks(data, sf.data.frame.spec, sf.data.strictness)
+export async function runSingleFunc<F extends object, T>(sf: SemanticFunction<F, T>, data: JsonLd): Promise<T> {
+    const framed = await frameWithChecks(data, sf.data.frame.spec, sf.data.strictness)
 
-//     const output = sf.func(framed)
-//     return output
-// }
+    const output = sf.func(framed)
+    return output
+}
 
 export * from "./genericHelpers"
 export * from "./rdfineHelpers"
