@@ -4,7 +4,15 @@ import { RdfResource } from "@tpluscode/rdfine/RdfResource"
 
 import { JsonLdArray } from "jsonld/jsonld-spec"
 
-export const toJSON = async (resource: RdfResource, frameOpts?: any): Promise<any> => {
+export function isList(resource: RdfResource | RdfResource[]): resource is RdfResource[] {
+    return Array.isArray(resource)
+}
+
+export const toJSON = async (resource: RdfResource | RdfResource[], frameOpts?: any): Promise<any> => {
+    if (isList(resource)) {
+        return await Promise.all(resource.map(async (e) => await toJSON(e)))
+    }
+
     // First we serialize to JSON-LD from the dataset
     const graphsOrItems = await jsonld.fromRDF(resource.pointer.dataset)
     // console.log("dataset", graphsOrItems)

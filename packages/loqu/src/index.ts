@@ -4,6 +4,8 @@ import * as jsonld from "jsonld"
 import { Options } from "jsonld"
 import { arrCmp } from "./utils"
 
+// Should this strictness type be only used for the framing operation
+// Or should it be used to run additional processing on the data?
 export enum Strictness {
     /** This just frames the data but doesn't impose any additional options */
     NoChecks,
@@ -19,7 +21,8 @@ export enum Strictness {
 }
 export enum Conversion {
     None,
-    /** Basic conversion converts xsd data types to JS */
+    /** Basic conversion converts xsd data types to JS. Can JSON-LD do this or do we need another lib?
+     * Right now most of our test data is exclusively string. We should test with `Number`s and `Date`s */
     BasicConversion,
 }
 
@@ -31,10 +34,10 @@ export type SFunc<F, T> = (data: FrameMap<F>) => T
 export type SemanticFunction<F extends object, T> = {
     data: {
         strictness: Strictness
-        conversion: Conversion
+        conversion?: Conversion
         frame: {
             spec: F
-            opts: Options.Frame
+            opts?: Options.Frame
         }
     }
     /** In this case, the function doesn't have a return value as this
@@ -47,10 +50,9 @@ export function defaultSemanticFunction(): SemanticFunction<{}, void> {
         data: {
             // what should this default be
             strictness: Strictness.FrameStrict,
-            conversion: Conversion.None,
+            // conversion: Conversion.None,
             frame: {
                 spec: {},
-                opts: {},
             },
         },
         func: (data: JsonLd) => {},
