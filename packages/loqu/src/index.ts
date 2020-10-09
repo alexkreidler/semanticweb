@@ -4,6 +4,9 @@ import * as jsonld from "jsonld"
 import { Options } from "jsonld"
 import { arrCmp } from "./utils"
 
+import { Term, Quad, Source, Dataset } from "rdf-js"
+import { DataSpec, FrameMap, JsonLDData, JsonLDSpec } from "./data"
+
 // Should this strictness type be only used for the framing operation
 // Or should it be used to run additional processing on the data?
 export enum Strictness {
@@ -71,19 +74,6 @@ export function createSemanticFunction<F extends object, T>(frame: F, func: SFun
  * End API Module boundary
  */
 
-/** FrameMap maps an input frame to a strongly typed output of the frame result. We preserve the type of context as is */
-export type FrameMap<T extends any> = {
-    [K in keyof T]: K extends "@context"
-        ? T[K]
-        : T[K] extends object
-        ? any // this handles all @embed options (e.g. a string ID vs an object)
-        : T[K] extends string
-        ? string
-        : T[K] extends object[] // This doesn't work yet
-        ? any[]
-        : unknown
-}
-
 /** typedFrame performs the JSON-LD framing operation and returns a strongly typed object.
  * The type garuantees are only valid if certain options are provided and checks are done aterwards */
 export async function typedFrame<T extends object>(data: any, frame: T, opts?: Options.Frame): Promise<FrameMap<T>> {
@@ -136,6 +126,7 @@ export async function runSingleFunc<F extends object, T>(sf: SemanticFunction<F,
 
 export * from "./genericHelpers"
 export * from "./rdfineHelpers"
+export * from "./data"
 
 export type IDNode = {
     "@id": string

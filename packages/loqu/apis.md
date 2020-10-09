@@ -88,3 +88,27 @@ Implementing the above contexts, etc:
 Container Components: Render or display many entities in some way. This could be a List of Leafs, or just a List of GenericListItem
 
 need to think about navigation later
+
+
+# Framing and APIs
+
+Data fetching situations
+1. We have all the data in an RDF/JS dataset --> Generic starter
+2. We have all the data in a big expanded JSON-LD doc --> Generic starter, library filtering
+3. We load the data as needed via Hydra, SPARQL --> Data fetching should be done automatically by layout of tree
+   1. We should propagate up the effective JSON-LD frames, and properly nest
+   2. However, components are only rendered when there is data of the proper type to pass through
+
+Given the above guidelines on context, the general plan is:
+- Keep a virtual tree of components
+- If we're calling for a Generic List of Cards for example, then we know that we need to use the Frame specified by the card component to fetch that data for each card. In fact, there may be a way to simply transform a JLD frame into simple triple queries that are more effective than frame requests for each item. However, a good server should accept JLD frames across a collection
+
+Components should 
+
+In a given Context several Views might be available
+There could be a ViewSwitcher at the bottom (e.g. search icon, or similar) to change view: e.b. Text -> Map for Address in a small Icon/Image context
+
+A generic list/table can use a MultiSelect to change properties displayed. There can be a default view for all items which can be changed at top. Also, can enable individual ViewSelect to change individual views
+
+
+How to deal with multiple components/views claiming that they can or should render a piece of data. Add priority? Make user choose?

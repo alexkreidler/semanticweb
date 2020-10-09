@@ -2630,6 +2630,13 @@
   resolved "https://registry.yarnpkg.com/@types/caseless/-/caseless-0.12.2.tgz#f65d3d6389e01eeb458bd54dc8f52b95a9463bc8"
   integrity sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==
 
+"@types/clownface@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/clownface/-/clownface-1.0.1.tgz#fd1bdda2dd19b287c1543b548ab19e1155e627d4"
+  integrity sha512-p2QlI4tF9DgS3GG7YGI3k0HRWSdIzKfRO6MQA8I1ODyMFqmCITOip89NNCagiEZXpOdr2d8TBYqrsPAfnwo2ag==
+  dependencies:
+    "@types/rdf-js" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -3894,7 +3901,7 @@ clone@^1.0.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
 
-clownface@^1:
+clownface@^1, clownface@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/clownface/-/clownface-1.0.0.tgz#77c8937241f02c08a49ac0370cb8628cde324e91"
   integrity sha512-8gAAqdD5ueYt62FHE9Zd4OTrcYEfiyQlxV/5NYxzKY5uO/HZbTv1+jhFHgYa3XD7BC+mkg+LFR9Mh168wj9aQQ==
