@@ -4,11 +4,6 @@ import { Term, Dataset } from "rdf-js"
 import { Options } from "jsonld"
 import { FrameMap } from "./frame"
 
-// type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
-export type JsonLDData<R extends JsonLDToForm> = R & {
-    data: R extends FramedForm<infer T> ? FrameMap<T> : any
-}
-
 // export type FrameSpec<F> = { spec: F; opts?: Options.Frame }
 export type JsonLDToForm<F = {}, C = {}> =
     | {
@@ -31,16 +26,25 @@ export type RdfJSSpec = {
 
 export type DataSpec = JsonLDToForm | ClownfaceSpec | RdfJSSpec
 
-export type ClownfaceData<S extends ClownfaceSpec> = {
-    format: "clownface"
+export type ClownfaceData = {
     pointer: AnyPointer
 }
 
 /** Virtually every function using an RDF/JS term needs access to the entire dataset to request more data */
-export type RDFJSData<S extends RdfJSSpec> = {
-    format: "rdf/js"
+export type RDFJSData = {
     node: Term
     dataset: Dataset
 }
+// type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
+export type JsonLDData<R extends JsonLDToForm> = R & {
+    data: R extends FramedForm<infer T> ? FrameMap<T> : any
+}
 
 // type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
+export type OutData<R extends DataSpec> = R extends JsonLDToForm
+    ? JsonLDData<R>
+    : R extends ClownfaceSpec
+    ? ClownfaceData
+    : R extends RdfJSSpec
+    ? RDFJSData
+    : null

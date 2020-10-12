@@ -1,4 +1,4 @@
-import { DataSpec, JsonLDData, JsonLDToForm } from "./formats"
+import { DataSpec, JsonLDData, JsonLDToForm, OutData } from "./formats"
 import { Selector } from "./selectors"
 import { Conversion, Strictness } from "./constraints"
 
@@ -12,5 +12,10 @@ export type SemanticComponent<R extends DataSpec> = {
         spec: R
     }
     /** The component or element to render */
-    component: ({ data }: { data: R extends JsonLDToForm ? JsonLDData<R> : R }) => React.ReactNode
+    component: (props: SCProps<R>) => React.ReactNode
+}
+
+export type SCProps<R extends DataSpec> = {
+    data: OutData<R>
+    spec: R
 }

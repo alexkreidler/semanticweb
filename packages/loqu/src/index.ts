@@ -1,3 +1,3 @@
 export * from "./genericHelpers"
 export * from "./rdfineHelpers"
-// export * from "./data"
+export * from "./data/index"
