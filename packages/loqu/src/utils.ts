@@ -34,3 +34,6 @@ export function arrCmp<T>(a1: T[], a2: T[]): boolean {
     }
     return true
 }
+export function assertUnreachable(x: never): never {
+    throw new Error("Didn't expect to get here")
+}

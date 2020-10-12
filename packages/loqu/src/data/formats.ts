@@ -4,6 +4,7 @@ import { Term, Dataset } from "rdf-js"
 import { Options } from "jsonld"
 import { FrameMap } from "./frame"
 import { RdfResource } from "@tpluscode/rdfine/RdfResource"
+import { NamedNode } from "rdf-data-factory"
 
 // export type FrameSpec<F> = { spec: F; opts?: Options.Frame }
 export type JsonLDToForm<F = {}, C = {}> =
@@ -41,7 +42,7 @@ export type ClownfaceData = {
 /** Virtually every function using an RDF/JS term needs access to the entire dataset to request more data */
 export type RDFJSData = {
     // format: "rdf/js"
-    node: Term
+    node: NamedNode //Term
     dataset: Dataset
 }
 
@@ -65,18 +66,18 @@ export type OutTypes<R extends DataSpec> = ClownfaceData | RDFJSData | RDFineDat
 
 // type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
 // Would this be better as a discriminated union as well?
-// export type OutData<R extends DataSpec> = R extends JsonLDToForm
-//     ? JsonLDData<R>
-//     : R extends ClownfaceSpec
-//     ? ClownfaceData
-//     : R extends RdfJSSpec
-//     ? RDFJSData
-//     : R extends RDFineSpec
-//     ? RDFineData
-//     : null
+export type OutData<R extends DataSpec> = R extends JsonLDToForm
+    ? JsonLDData<R>
+    : R extends ClownfaceSpec
+    ? ClownfaceData
+    : R extends RdfJSSpec
+    ? RDFJSData
+    : R extends RDFineSpec
+    ? RDFineData
+    : null
 
 export type GetOut<T, A> = T extends { format: A } ? T : never
 
 // export type OutData<TIn extends DataSpec> = TIn extends { format: infer A } ? GetOut<OutTypes, A> : never
 
-export type OutData<R extends DataSpec> = OutTypes<R>
+// export type OutData<R extends DataSpec> = OutTypes<R>
