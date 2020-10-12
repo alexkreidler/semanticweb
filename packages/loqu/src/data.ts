@@ -53,48 +53,23 @@ export type SemanticComponent<R extends DataSpec> = {
     /** The component or element to render */
     component: ({ data }: { data: R extends JsonLDToForm ? JsonLDData<R> : R }) => React.ReactNode
 }
-
+// type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
 export type JsonLDData<R extends JsonLDToForm> = R & {
-    data: R["form"] extends FramedForm ? FrameMap<R["frameSpec"]> : any
-}
-const sc = {
-    hey: "yherte",
-}
-
-const ds: DataSpec = {
-    format: "jsonld",
-    form: "framed",
-    frameSpec: sc,
-}
-export const GL: SemanticComponent<typeof ds> = {
-    selector: {
-        iri: /.*/,
-    },
-    data: {
-        strictness: Strictness.NoChecks,
-        spec: ds,
-    },
-
-    component: ({ data }) => {
-        // data.data
-        // data.data.
-        // data.data
-        return "hey"
-    },
+    data: R extends FramedForm<infer T> ? FrameMap<T> : any
 }
 
 // export type FrameSpec<F> = { spec: F; opts?: Options.Frame }
-export type JsonLDToForm =
+export type JsonLDToForm<F = {}, C = {}> =
     | {
           format: "jsonld"
           form: "compacted"
-          context: JsonLd
+          context: C // JsonLd
       }
-    | FramedForm
+    | FramedForm<F>
     | { format: "jsonld"; form: "expanded" }
     | { format: "jsonld"; form: "flattened" }
 
-export type FramedForm = { format: "jsonld"; form: "framed"; frameSpec: any; frameOpts?: Options.Frame }
+export type FramedForm<F> = { format: "jsonld"; form: "framed"; frameSpec: F; frameOpts?: Options.Frame }
 
 export type ClownfaceSpec = {
     format: "clownface"
