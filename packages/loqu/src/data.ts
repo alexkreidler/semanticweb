@@ -51,23 +51,20 @@ export type SemanticComponent<R extends DataSpec> = {
         // }
     }
     /** The component or element to render */
-    component: ({
-        data,
-    }: {
-        data: R extends { format: "jsonld"; form: "framed" } ? R & { data: FrameMap<R["frame"]> } : R
-    }) => React.ReactNode
+    component: ({ data }: { data: R extends JsonLDToForm ? JsonLDData<R> : R }) => React.ReactNode
 }
 
+export type JsonLDData<R extends JsonLDToForm> = R & {
+    data: R["form"] extends FramedForm ? FrameMap<R["frameSpec"]> : any
+}
 const sc = {
     hey: "yherte",
 }
 
-const ds: DataSpec<typeof sc> = {
+const ds: DataSpec = {
     format: "jsonld",
     form: "framed",
-    frame: {
-        spec: sc,
-    },
+    frameSpec: sc,
 }
 export const GL: SemanticComponent<typeof ds> = {
     selector: {
@@ -79,30 +76,25 @@ export const GL: SemanticComponent<typeof ds> = {
     },
 
     component: ({ data }) => {
-        data.data.
         // data.data
+        // data.data.
         // data.data
-        // data.data
-        // data.data
-        // data.form.
         return "hey"
     },
 }
 
-// export type JsonLDData<F, D extends JsonLDToForm = JsonLDToForm<F>> = D & {
-//     data: D["form"] extends "framed" ? FrameMap<F> : any
-// }
-
-export type FrameSpec<F> = { spec: F; opts?: Options.Frame }
-export type JsonLDToForm<F = {}, C = {}> =
+// export type FrameSpec<F> = { spec: F; opts?: Options.Frame }
+export type JsonLDToForm =
     | {
           format: "jsonld"
           form: "compacted"
           context: JsonLd
       }
-    | { format: "jsonld"; form: "framed"; frame: FrameSpec<F> }
+    | FramedForm
     | { format: "jsonld"; form: "expanded" }
     | { format: "jsonld"; form: "flattened" }
+
+export type FramedForm = { format: "jsonld"; form: "framed"; frameSpec: any; frameOpts?: Options.Frame }
 
 export type ClownfaceSpec = {
     format: "clownface"
@@ -111,7 +103,7 @@ export type RdfJSSpec = {
     format: "rdf/js"
 }
 
-export type DataSpec<F = {}, C = {}> = JsonLDToForm<F, C> | ClownfaceSpec | RdfJSSpec
+export type DataSpec = JsonLDToForm | ClownfaceSpec | RdfJSSpec
 
 export type ClownfaceData<S extends ClownfaceSpec> = {
     format: "clownface"
@@ -132,10 +124,10 @@ export type RDFJSData<S extends RdfJSSpec> = {
 //     Framed,
 // }
 
-type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
+// type ExtractFrame<F> = F extends FrameSpec<infer T> ? T : any
 
 /** FrameMap maps an input frame to a strongly typed output of the frame result. We preserve the type of context as is */
-export type FrameMap<F extends FrameSpec<T>, T = ExtractFrame<F>> = {
+export type FrameMap<T> = {
     [K in keyof T]: K extends "@context"
         ? T[K]
         : T[K] extends object
@@ -147,15 +139,6 @@ export type FrameMap<F extends FrameSpec<T>, T = ExtractFrame<F>> = {
         : unknown
 }
 
-const sp = {
-    hey: "there"
-}
-const fs: FrameSpec<typeof sp> = { spec: sp
-}
-
-const out: FrameMap<typeof fs>
-
-out.hey
 // type JLDForm = "expanded" | "flattened" | { form: "compacted"; context: JsonLd } | { form: "framed"; frame: JsonLd }
 
 // Does extends JsonLd matter?
