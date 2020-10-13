@@ -2,7 +2,10 @@
     "extends": "../../tsconfig.json",
 
     "compilerOptions": {
-        "allowJs": true
+        "allowJs": true,
+        "experimentalDecorators": true,
+        "target": "es2018",
+        "lib": ["es2017", "es2015", "dom"]
     },
     "include": ["src/**/*"]
 }

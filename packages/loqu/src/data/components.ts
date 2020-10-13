@@ -5,6 +5,11 @@ import clownface from "clownface"
 import RdfResourceImpl from "@tpluscode/rdfine/RdfResource"
 import { typedFrame } from "./frame"
 import { assertUnreachable } from "../utils"
+import { DocumentedResourceMixin } from "../rdfine/DocumentedResourceMixin"
+
+// import * as Extensions from "alcaeus/Resources/Mixins"
+// import * as Hydra from "@rdfine/hydra"
+// import { DocumentedResourceMixin } from "alcaeus/Resources/Mixins"
 
 /** Do we want to make this generic over return types? */
 export type SemanticComponent<R extends DataSpec> = {
@@ -24,6 +29,12 @@ export type SCProps<R extends DataSpec> = {
     spec: R
 }
 
+function preRenderHook() {
+    RdfResourceImpl.factory.addMixin(DocumentedResourceMixin)
+    // factory.addMixin(...Object.values(Hydra))
+    // factory.addMixin(...Object.values(Extensions))
+}
+
 // Should this be async to allow for JSON-LD processing
 /** Renders a single component where the Node to render is already known. No selector is run */
 export function renderSingleComponent<T extends DataSpec>(
@@ -32,7 +43,12 @@ export function renderSingleComponent<T extends DataSpec>(
 ): React.ReactNode {
     // TODO: add user hooks here to make sure that RDFine ResourceFactory has all relevant mixins registered
 
+    preRenderHook()
+
     const spec = component.data.spec
+    console.log("Got spec", spec)
+    console.log("data", data)
+
     switch (spec.format) {
         case "rdf/js":
             //@ts-ignore
