@@ -1,6 +1,6 @@
 import { AnyPointer } from "clownface"
 
-import { Term, Dataset, NamedNode } from "rdf-js"
+import { Term, Dataset, NamedNode, DatasetCore } from "rdf-js"
 import { Options } from "jsonld"
 import { FrameMap } from "./frame"
 import { RdfResource } from "@tpluscode/rdfine/RdfResource"
@@ -43,6 +43,11 @@ export type RDFJSData = {
     // format: "rdf/js"
     node: NamedNode //Term
     dataset: Dataset
+}
+
+export type RDFJSDataExtended = {
+    dataset: DatasetCore
+    term: Term
 }
 
 export type RDFineData = {

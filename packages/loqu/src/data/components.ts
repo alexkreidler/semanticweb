@@ -11,9 +11,19 @@ import { DocumentedResourceMixin } from "../rdfine/DocumentedResourceMixin"
 // import * as Hydra from "@rdfine/hydra"
 // import { DocumentedResourceMixin } from "alcaeus/Resources/Mixins"
 
+/** This metadata helps us narrow the selection, and allows distinguishing between different UI views of the same object.
+ * It may be assigned a JSON-LD/rdf meaning
+ */
+export type Metadata = {
+    componentID: string
+    componentGroup: string
+    uiContext?: string
+}
+
 /** Do we want to make this generic over return types? */
-export type SemanticComponent<R extends DataSpec> = {
+export type SemanticComponent<R extends DataSpec, P = {}> = {
     selector: Selector
+    metadata?: Metadata
     /** Options to control the preprocessing of the input data */
     data: {
         strictness: Strictness
@@ -21,12 +31,14 @@ export type SemanticComponent<R extends DataSpec> = {
         spec: R
     }
     /** The component or element to render */
-    component: (props: SCProps<R>) => React.ReactNode
+    component: (props: SCProps<R, P>) => React.ReactNode
 }
 
-export type SCProps<R extends DataSpec> = {
+export type SCProps<R extends DataSpec, P = {}> = {
     data: OutData<R>
     spec: R
+    // In the future, should this be required?
+    props?: P
 }
 
 function preRenderHook() {
@@ -36,40 +48,42 @@ function preRenderHook() {
 }
 
 // Should this be async to allow for JSON-LD processing
+// when adding a generic argument, the type parameters referenced are inferred
 /** Renders a single component where the Node to render is already known. No selector is run */
-export function renderSingleComponent<T extends DataSpec>(
-    component: SemanticComponent<T>,
-    data: RDFJSData
+export function renderSingleComponent<R extends DataSpec, P>(
+    component: SemanticComponent<R, P>,
+    data: RDFJSData,
+    props?: P
 ): React.ReactNode {
     // TODO: add user hooks here to make sure that RDFine ResourceFactory has all relevant mixins registered
 
     preRenderHook()
 
     const spec = component.data.spec
-    console.log("Got spec", spec)
-    console.log("data", data)
+
+    const baseProps = { spec, props }
 
     switch (spec.format) {
         case "rdf/js":
             //@ts-ignore
-            return component.component({ data: data, spec })
+            return component.component({ data: data, ...baseProps })
             break
 
         case "clownface":
             return component.component({
                 //@ts-ignore
                 data: { pointer: clownface({ dataset: data.dataset }).namedNode(data.node) },
-                spec,
+                ...baseProps,
             })
 
         case "rdfine":
             const res = RdfResourceImpl.factory.createEntity(clownface({ dataset: data.dataset }).namedNode(data.node))
             //@ts-ignore
-            return component.component({ data: { object: res }, spec })
+            return component.component({ data: { object: res }, ...baseProps })
 
         case "jsonld":
             //@ts-ignore
-            return component.component({ data: processJsonLDDocument(spec as JsonLDToForm, data), spec })
+            return component.component({ data: processJsonLDDocument(spec as JsonLDToForm, data), ...baseProps })
     }
     return assertUnreachable(spec.format) //`Failed to render component, unkown data format ${spec.format} in component spec`
 }

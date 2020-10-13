@@ -12,6 +12,9 @@ export interface DocumentedResource {
      * Gets the value of either hydra:description or schema:description or rdfs:comment property
      */
     description: string
+
+    descriptionFromProperty: string
+    titleFromProperty: string
 }
 
 function getTitle(res: RdfResource) {
@@ -46,8 +49,27 @@ export function DocumentedResourceMixin<TBase extends Constructor>(Base: TBase) 
             return this.__hydraDescription || this.__rdfsComment || this.__schemaDescription
         }
 
+        public get descriptionFromProperty(): string {
+            return this.__hydraDescription
+                ? hydra.description.value
+                : this.__rdfsComment
+                ? rdfs.comment.value
+                : this.__schemaDescription
+                ? schema.description.value
+                : ""
+        }
+
         public get title(): string {
             return this.__hydraTitle || this.__rdfsLabel || this.__schemaTitle
+        }
+        public get titleFromProperty(): string {
+            return this.__hydraTitle
+                ? hydra.title.value
+                : this.__rdfsLabel
+                ? rdfs.label.value
+                : this.__schemaTitle
+                ? schema.title.value
+                : ""
         }
 
         constructor(...args: any[]) {
