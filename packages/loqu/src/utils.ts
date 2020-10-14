@@ -29,3 +29,9 @@ export function arrCmp<T>(a1: T[], a2: T[]): boolean {
 export function assertUnreachable(x: never): never {
     throw new Error("Didn't expect to get here")
 }
+
+export class UnreachableCaseError extends Error {
+    constructor(val: never) {
+        super(`Unreachable case: ${val}`)
+    }
+}

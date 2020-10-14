@@ -49,6 +49,7 @@ e.g. rough RDF outline in treeish fmt
       - Address (data or object prop. treated as object b/c we provide code features for it)
       - Products: Set, or Multi Link
         - Product -> Page
+          - Name
           - InStock
           - Price
       - Employees
@@ -61,6 +62,12 @@ In Entity Selector Fmt
   - Shop
   - Product
   - Person
+
+/shop/name-or-id
+  /products
+  /employees
+/product/id
+/person/id
 
 There are about a million ways to render and visualize this info.
 A list view of shops with name, address as {text, mini icon map,}, total sales, photo of exterior

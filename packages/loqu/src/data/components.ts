@@ -15,13 +15,14 @@ import { DocumentedResourceMixin } from "../rdfine/DocumentedResourceMixin"
  * It may be assigned a JSON-LD/rdf meaning
  */
 export type Metadata = {
-    componentID: string
-    componentGroup: string
+    // componentID: string
+    // componentGroup: string
     uiContext?: string
 }
 
 /** Do we want to make this generic over return types? */
 export type SemanticComponent<R extends DataSpec, P = {}> = {
+    id: string
     selector: Selector
     metadata?: Metadata
     /** Options to control the preprocessing of the input data */
