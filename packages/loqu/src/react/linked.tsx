@@ -5,8 +5,8 @@ import { Registry } from "../registry"
 export const linked = (comp: SemanticComponent<any> | React.ComponentType): React.ComponentType => {
     if ("id" in comp) {
         Registry.register(comp)
-        const x = () => <>{renderSingleComponent(comp, null)}</>
-        return x
+        // const x = () => <>{renderSingleComponent(comp, null)}</>
+        return () => <></>
     } else {
         throw new Error("Whoops, can't register a plain react component. You need a SemanticComponent")
     }

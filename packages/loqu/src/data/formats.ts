@@ -61,7 +61,7 @@ export type JsonLDData<R extends JsonLDToForm> = {
     document: R extends FramedForm<infer T> ? FrameMap<T> : any
 }
 
-export type OutTypes<R extends DataSpec> = ClownfaceData | RDFJSData | RDFineData
+export type DataFormat = ClownfaceData | RDFJSData | RDFineData
 
 // | R extends JsonLDToForm
 //     ? JsonLDData<R>

@@ -3,7 +3,11 @@ import { assertUnreachable, UnreachableCaseError } from "../utils"
 import { RDFJSData } from "./formats"
 
 /** Determines when a semantic component or processor should be applies */
-export type Selector = IRISelector | FunctionSelector | MatchSelector
+export type Selector = BasicSelector & (IRISelector | FunctionSelector | MatchSelector)
+
+export type BasicSelector = {
+    priority?: number
+}
 
 export enum MatchMode {
     MoreThanOne,
@@ -34,7 +38,7 @@ export type FunctionSelector = {
     enabled: (data: any) => boolean
 }
 
-export function handleSelector(selector: Selector, data: RDFJSData): boolean {
+export function doesSelectorMatch(selector: Selector, data: RDFJSData): boolean {
     switch (selector.type) {
         case "match":
             if (selector.mode == MatchMode.MoreThanOne) {
@@ -43,9 +47,28 @@ export function handleSelector(selector: Selector, data: RDFJSData): boolean {
                 return selector.size == data.dataset.match(...selector.matchArgs).size
             }
         case "iri":
-            return data.node.value.match(selector.iri).length > 0
+            const iri = data.node.value
+            const out = iri.match(selector.iri)
+            return out ? out.length > 0 : false
 
         case "function":
             return selector.enabled(data)
     }
+}
+
+// TODO: maybe add some rough estimation of priority based on the specificity of iri regex
+export function handleSelectors<T extends Selector>(s: T[], data: RDFJSData): T[] {
+    return s
+        .filter((i) => doesSelectorMatch(i, data))
+        .sort((a, b) => {
+            if (!a.priority) {
+                a.priority = 0
+            }
+            if (!b.priority) {
+                b.priority = 0
+            }
+            const sval = a.priority - b.priority
+            // Sorts highest to lowest
+            return -sval
+        })
 }
