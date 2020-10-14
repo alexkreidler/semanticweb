@@ -42,7 +42,7 @@ export type ClownfaceData = {
 export type RDFJSData = {
     // format: "rdf/js"
     node: NamedNode //Term
-    dataset: Dataset
+    dataset: DatasetCore
 }
 
 export type RDFJSDataExtended = {

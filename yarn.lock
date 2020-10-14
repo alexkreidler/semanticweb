@@ -2948,6 +2948,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/rdf-js@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/rdf-js/-/rdf-js-4.0.0.tgz#96f7314b09b77ecd16fca7f358db90db8ac86d1b"
+  integrity sha512-2uaR7ks0380MqzUWGOPOOk9yZIr/6MOaCcaj3ntKgd2PqNocgi8j5kSHIJTDe+5ABtTHqKMSE0v0UqrsT8ibgQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/rdfjs__namespace@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@types/rdfjs__namespace/-/rdfjs__namespace-1.1.2.tgz#4509228333d4cb1559ed020efc3cb83a913c68d6"

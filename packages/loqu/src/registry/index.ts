@@ -21,7 +21,7 @@ type Error = ParseError | NotFoundError | InvalidComponentError | IncorrectSelec
 
 export interface IComponentRegistry {
     register<R extends DataSpec, P>(component: SemanticComponent<R, P>): Error | undefined
-    handle<R extends DataSpec, P>(dataItem: RDFJSData): SemanticComponent<R, P> | Error
+    // handle<R extends DataSpec, P>(dataItem: RDFJSData): SemanticComponent<R, P> | Error
 }
 export interface IRegistryHooks {
     registerCallback: () => void
@@ -63,18 +63,18 @@ export class ComponentRegistry implements IComponentRegistry, IRegistryHooks {
     // Or should we just expose a list of all components
     // With complex selectors, multiple components could claim a stake on a data object
     // Additionally, UI state like a switcher between list and grid view may change the uiContext and which one gets rendered
-    handle<R extends DataSpec, P>(dataItem: RDFJSData): SemanticComponent<R, P> | Error {
-        const selected = handleSelectors(
-            Object.values(this.map).map((v) => ({ ...v.selector, id: v.id })),
-            dataItem
-        )
-        if (selected.length > 2) {
-            console.warn(`More than 2 selectors for data item ${dataItem.node.value}`)
-        }
-        console.log(selected)
+    // handle<R extends DataSpec, P>(dataItem: RDFJSData): SemanticComponent<R, P> | Error {
+    //     const selected = handleSelectors(
+    //         Object.values(this.map).map((v) => ({ ...v.selector, id: v.id })),
+    //         dataItem
+    //     )
+    //     if (selected.length > 2) {
+    //         console.warn(`More than 2 selectors for data item ${dataItem.node.value}`)
+    //     }
+    //     console.log(selected)
 
-        return this.map[selected[0].id]
-    }
+    //     return this.map[selected[0].id]
+    // }
 }
 
 export const Registry = new ComponentRegistry()

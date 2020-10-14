@@ -1,6 +1,7 @@
 import { Dataset } from "rdf-js"
-import { assertUnreachable, UnreachableCaseError } from "../utils"
-import { RDFJSData } from "./formats"
+import { assertUnreachable, findSimilarity, UnreachableCaseError } from "../utils"
+import { Metadata, SemanticComponent } from "./components"
+import { DataSpec, RDFJSData } from "./formats"
 
 /** Determines when a semantic component or processor should be applies */
 export type Selector = BasicSelector & (IRISelector | FunctionSelector | MatchSelector)
@@ -57,17 +58,31 @@ export function doesSelectorMatch(selector: Selector, data: RDFJSData): boolean 
 }
 
 // TODO: maybe add some rough estimation of priority based on the specificity of iri regex
-export function handleSelectors<T extends Selector>(s: T[], data: RDFJSData): T[] {
+export function handleSelectors<R extends DataSpec, P = {}>(
+    s: SemanticComponent<R, P>[],
+    data: RDFJSData,
+    m?: Metadata
+): SemanticComponent<R, P>[] {
     return s
-        .filter((i) => doesSelectorMatch(i, data))
-        .sort((a, b) => {
+        .filter((i) => doesSelectorMatch(i.selector, data))
+        .sort((c, d) => {
+            let aBonus
+            let bBonus
+            if (m) {
+                aBonus = findSimilarity(c.metadata, m)
+                bBonus = findSimilarity(d.metadata, m)
+            }
+            const a = c.selector
+            const b = d.selector
             if (!a.priority) {
                 a.priority = 0
             }
             if (!b.priority) {
                 b.priority = 0
             }
-            const sval = a.priority - b.priority
+            console.log(a.priority, aBonus, b.priority, bBonus)
+
+            const sval = a.priority + aBonus - (b.priority + bBonus)
             // Sorts highest to lowest
             return -sval
         })

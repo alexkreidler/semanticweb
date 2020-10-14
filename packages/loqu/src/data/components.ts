@@ -6,10 +6,15 @@ import RdfResourceImpl from "@tpluscode/rdfine/RdfResource"
 import { typedFrame } from "./frame"
 import { assertUnreachable } from "../utils"
 import { DocumentedResourceMixin } from "../rdfine/DocumentedResourceMixin"
+import { DatasetCore } from "rdf-js"
 
 // import * as Extensions from "alcaeus/Resources/Mixins"
 // import * as Hydra from "@rdfine/hydra"
 // import { DocumentedResourceMixin } from "alcaeus/Resources/Mixins"
+
+export enum UIContext {
+    ListItem = "http://loqu.dev/schema/uiContexts/ListItem",
+}
 
 /** This metadata helps us narrow the selection, and allows distinguishing between different UI views of the same object.
  * It may be assigned a JSON-LD/rdf meaning
@@ -17,7 +22,7 @@ import { DocumentedResourceMixin } from "../rdfine/DocumentedResourceMixin"
 export type Metadata = {
     // componentID: string
     // componentGroup: string
-    uiContext?: string
+    uiContext?: UIContext
 }
 
 /** Do we want to make this generic over return types? */
@@ -78,7 +83,10 @@ export function renderSingleComponent<R extends DataSpec, P>(
             })
 
         case "rdfine":
-            const res = RdfResourceImpl.factory.createEntity(clownface({ dataset: data.dataset }).namedNode(data.node))
+            const res = RdfResourceImpl.factory.createEntity(
+                //@ts-ignore
+                clownface({ dataset: data.dataset as DatasetCore }).namedNode(data.node)
+            )
             //@ts-ignore
             return component.component({ data: { object: res }, ...baseProps })
 

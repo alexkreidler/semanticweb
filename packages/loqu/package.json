@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@tpluscode/rdf-string": "^0.2.20",
+    "@types/rdf-js": "^4.0.0",
     "ts-jest": "^26.4.0",
     "typescript": "^3.9.7"
   },

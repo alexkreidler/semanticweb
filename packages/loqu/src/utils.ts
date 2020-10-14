@@ -35,3 +35,23 @@ export class UnreachableCaseError extends Error {
         super(`Unreachable case: ${val}`)
     }
 }
+
+export const findSimilarity = (first: any, second: any): number => {
+    const firstLength = Object.keys(first).length
+    const secondLength = Object.keys(second).length
+    const smaller = firstLength < secondLength ? first : second
+    const greater = smaller === first ? second : first
+    const count = Object.keys(smaller).reduce((acc, val) => {
+        if (Object.keys(greater).includes(val)) {
+            // TODO maybe?: add recursion for nested objects
+            // if (typeof greater[val] == "object") {
+
+            // }
+            if (greater[val] === smaller[val]) {
+                return ++acc
+            }
+        }
+        return acc
+    }, 0)
+    return (count / Math.min(firstLength, secondLength)) * 100
+}
