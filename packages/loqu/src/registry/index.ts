@@ -29,10 +29,10 @@ export interface IRegistryHooks {
 }
 
 const normalizeIRI = (iri: string): string => {
-    console.debug("input iri", iri)
+    // console.debug("input iri", iri)
     // TODO: think about more complex normalization
     let out = iri.replace(/^https:\/\//i, "http://")
-    console.debug("output iri", out)
+    // console.debug("output iri", out)
     return out
 }
 

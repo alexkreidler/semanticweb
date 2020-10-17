@@ -1,3 +1,5 @@
+import { RDFJSData } from "./data"
+
 export function prettyPrint(data: any): string {
     return JSON.stringify(data, undefined, 4)
 }
@@ -54,4 +56,8 @@ export const findSimilarity = (first: any, second: any): number => {
         return acc
     }, 0)
     return (count / Math.min(firstLength, secondLength)) * 100
+}
+
+export const dSize = (data: RDFJSData): void => {
+    console.log(data.dataset.size)
 }

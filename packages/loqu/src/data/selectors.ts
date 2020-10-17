@@ -1,10 +1,14 @@
 import { Dataset } from "rdf-js"
 import { assertUnreachable, findSimilarity, UnreachableCaseError } from "../utils"
-import { Metadata, SemanticComponent } from "./components"
+import { SemanticComponent } from "./components"
+import { Metadata } from "./metadata"
+import { RDFJS2Clownface } from "./conversions"
 import { DataSpec, RDFJSData } from "./formats"
 
+import { rdf } from "@tpluscode/rdf-ns-builders"
+
 /** Determines when a semantic component or processor should be applies */
-export type Selector = BasicSelector & (IRISelector | FunctionSelector | MatchSelector)
+export type Selector = BasicSelector & (IRISelector | FunctionSelector | MatchSelector | TypeSelector)
 
 export type BasicSelector = {
     priority?: number
@@ -32,11 +36,16 @@ export type IRISelector = {
     iri: string | RegExp
 }
 
+export type TypeSelector = {
+    type: "type"
+    iri: string | RegExp
+}
+
 /** This executes a function to determine if the component matches the node */
 export type FunctionSelector = {
     type: "function"
     // what type should data be: a clownface pointer? an rdf/js namednode, with another parameter for the dataset?
-    enabled: (data: any) => boolean
+    enabled: (data: RDFJSData) => boolean
 }
 
 export function doesSelectorMatch(selector: Selector, data: RDFJSData): boolean {
@@ -54,6 +63,14 @@ export function doesSelectorMatch(selector: Selector, data: RDFJSData): boolean 
 
         case "function":
             return selector.enabled(data)
+        case "type":
+            const types = RDFJS2Clownface(data).pointer.out(rdf.type).values
+            if (typeof selector.iri == "string") {
+                return types.includes(selector.iri)
+            } else if (selector.iri instanceof RegExp) {
+                return types.filter((t) => t.match(selector.iri)).length > 0
+            }
+            return false
     }
 }
 
@@ -63,7 +80,7 @@ export function handleSelectors<R extends DataSpec, P = {}>(
     data: RDFJSData,
     m?: Metadata
 ): SemanticComponent<R, P>[] {
-    return s
+    const out = s
         .filter((i) => doesSelectorMatch(i.selector, data))
         .sort((c, d) => {
             let aBonus
@@ -80,10 +97,19 @@ export function handleSelectors<R extends DataSpec, P = {}>(
             if (!b.priority) {
                 b.priority = 0
             }
-            console.log(a.priority, aBonus, b.priority, bBonus)
+            // console.log(a.priority, aBonus, b.priority, bBonus)
 
-            const sval = a.priority + aBonus - (b.priority + bBonus)
+            const aVal = a.priority + aBonus
+            // ;(c as any).val = aVal
+            const bVal = b.priority + bBonus
+            // ;(d as any).val = bVal
+
+            const sval = aVal - bVal
+            // console.log(sval)
+
             // Sorts highest to lowest
             return -sval
         })
+    // console.log(out)
+    return out
 }

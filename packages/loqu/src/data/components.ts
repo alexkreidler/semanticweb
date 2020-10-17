@@ -1,31 +1,19 @@
 import { DataSpec, JsonLDData, JsonLDToForm, OutData, RDFJSData } from "./formats"
 import { Selector } from "./selectors"
 import { Conversion, Strictness } from "./constraints"
-import clownface from "clownface"
+import clownface, { GraphPointer } from "clownface"
 import RdfResourceImpl from "@tpluscode/rdfine/RdfResource"
 import { typedFrame } from "./frame"
-import { assertUnreachable } from "../utils"
+import { assertUnreachable, dSize } from "../utils"
 import { DocumentedResourceMixin } from "../rdfine/DocumentedResourceMixin"
 import { DatasetCore } from "rdf-js"
+import { RDFJS2Clownface } from "./conversions"
+import { Metadata } from "./metadata"
+import { JsonLdProcessor } from "jsonld"
 
-// import * as Extensions from "alcaeus/Resources/Mixins"
-// import * as Hydra from "@rdfine/hydra"
-// import { DocumentedResourceMixin } from "alcaeus/Resources/Mixins"
-
-export enum UIContext {
-    ListItem = "http://loqu.dev/schema/uiContexts/ListItem",
-    Card = "http://loqu.dev/schema/uiContexts/Card",
-    Icon = "http://loqu.dev/schema/uiContexts/Icon",
-}
-
-/** This metadata helps us narrow the selection, and allows distinguishing between different UI views of the same object.
- * It may be assigned a JSON-LD/rdf meaning
- */
-export type Metadata = {
-    // componentID: string
-    // componentGroup: string
-    uiContext?: UIContext
-}
+import * as Extensions from "alcaeus/Resources/Mixins"
+import * as Hydra from "@rdfine/hydra"
+import { Resource } from "alcaeus"
 
 /** Do we want to make this generic over return types? */
 export type SemanticComponent<R extends DataSpec, P = {}> = {
@@ -51,8 +39,8 @@ export type SCProps<R extends DataSpec, P = {}> = {
 
 function preRenderHook() {
     RdfResourceImpl.factory.addMixin(DocumentedResourceMixin)
-    // factory.addMixin(...Object.values(Hydra))
-    // factory.addMixin(...Object.values(Extensions))
+    RdfResourceImpl.factory.addMixin(...Object.values(Hydra))
+    RdfResourceImpl.factory.addMixin(...Object.values(Extensions))
 }
 
 // Should this be async to allow for JSON-LD processing
@@ -64,6 +52,8 @@ export function renderSingleComponent<R extends DataSpec, P>(
     props?: P
 ): React.ReactNode {
     // TODO: add user hooks here to make sure that RDFine ResourceFactory has all relevant mixins registered
+
+    // dSize(data)
 
     preRenderHook()
 
@@ -80,15 +70,15 @@ export function renderSingleComponent<R extends DataSpec, P>(
         case "clownface":
             return component.component({
                 //@ts-ignore
-                data: { pointer: clownface({ dataset: data.dataset }).namedNode(data.node) },
+                data: RDFJS2Clownface(data),
                 ...baseProps,
             })
 
         case "rdfine":
-            const res = RdfResourceImpl.factory.createEntity(
-                //@ts-ignore
-                clownface({ dataset: data.dataset as DatasetCore }).namedNode(data.node)
-            )
+            const ps = RDFJS2Clownface(data).pointer
+            const res = RdfResourceImpl.factory.createEntity<Resource>(ps as GraphPointer)
+            console.log(res.toJSON())
+
             //@ts-ignore
             return component.component({ data: { object: res }, ...baseProps })
 
