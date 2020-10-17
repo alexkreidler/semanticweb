@@ -3,7 +3,7 @@ import { AnyPointer } from "clownface"
 import { Term, Dataset, NamedNode, DatasetCore } from "rdf-js"
 import { Options } from "jsonld"
 import { FrameMap } from "./frame"
-import { RdfResource } from "@tpluscode/rdfine/RdfResource"
+import { RdfResource } from "@tpluscode/rdfine"
 
 // export type FrameSpec<F> = { spec: F; opts?: Options.Frame }
 export type JsonLDToForm<F = {}, C = {}> =

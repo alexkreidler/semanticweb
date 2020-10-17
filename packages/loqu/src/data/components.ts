@@ -14,6 +14,8 @@ import { DatasetCore } from "rdf-js"
 
 export enum UIContext {
     ListItem = "http://loqu.dev/schema/uiContexts/ListItem",
+    Card = "http://loqu.dev/schema/uiContexts/Card",
+    Icon = "http://loqu.dev/schema/uiContexts/Icon",
 }
 
 /** This metadata helps us narrow the selection, and allows distinguishing between different UI views of the same object.
