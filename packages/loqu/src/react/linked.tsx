@@ -9,6 +9,6 @@ export function linked<R extends DataSpec, P = {}>(
     // console.log("linking, registering")
 
     // Registry.register(comp)
-    const x = ({ data, ...props }) => <>{renderSingleComponent(comp, data, props)}</>
-    return x
+    // const x = ({ data, ...props }) => <>{renderSingleComponent(comp, data, props)}</>
+    return () => <>Hey there</>
 }

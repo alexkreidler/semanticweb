@@ -15,14 +15,20 @@
   },
   "devDependencies": {
     "@tpluscode/rdf-string": "^0.2.20",
+    "eslint-plugin-react-hooks": "^4.1.2",
     "ts-jest": "^26.4.0",
     "typescript": "^3.9.7"
   },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
   "dependencies": {
-    "@types/rdf-js": "^4.0.0",
+    "react-async-hook": "^3.6.1",
     "@rdfjs/namespace": "^1.1.0",
     "@tpluscode/rdfine": "^0.5.10",
     "@types/clownface": "^1.0.1",
+    "@types/rdf-js": "^4.0.0",
     "@types/rdfjs__namespace": "^1.1.2",
     "alcaeus": "^1.0.0-RC.0",
     "clownface": "^1.0.0",

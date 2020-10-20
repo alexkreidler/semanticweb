@@ -15,6 +15,8 @@ import * as Extensions from "alcaeus/Resources/Mixins"
 import * as Hydra from "@rdfine/hydra"
 import { Resource } from "alcaeus"
 
+import * as jsonld from "jsonld"
+
 /** Do we want to make this generic over return types? */
 export type SemanticComponent<R extends DataSpec, P = {}> = {
     id: string
@@ -35,6 +37,7 @@ export type SCProps<R extends DataSpec, P = {}> = {
     spec: R
     // In the future, should this be required?
     props?: P
+    rdfData: RDFJSData
 }
 
 function preRenderHook() {
@@ -46,20 +49,24 @@ function preRenderHook() {
 // Should this be async to allow for JSON-LD processing
 // when adding a generic argument, the type parameters referenced are inferred
 /** Renders a single component where the Node to render is already known. No selector is run */
-export function renderSingleComponent<R extends DataSpec, P>(
+export async function renderSingleComponent<R extends DataSpec, P>(
     component: SemanticComponent<R, P>,
     data: RDFJSData,
     props?: P
-): React.ReactNode {
+): Promise<React.ReactNode> {
     // TODO: add user hooks here to make sure that RDFine ResourceFactory has all relevant mixins registered
 
     // dSize(data)
 
-    preRenderHook()
+    // console.log("Render single", component, data, props)
+
+    // preRenderHook()
 
     const spec = component.data.spec
 
-    const baseProps = { spec, props }
+    const rdfData = data
+
+    const baseProps = { spec, props, rdfData }
 
     switch (spec.format) {
         case "rdf/js":
@@ -84,15 +91,24 @@ export function renderSingleComponent<R extends DataSpec, P>(
 
         case "jsonld":
             //@ts-ignore
-            return component.component({ data: processJsonLDDocument(spec as JsonLDToForm, data), ...baseProps })
+            return component.component({ data: await processJsonLDDocument(spec as JsonLDToForm, data), ...baseProps })
     }
     return assertUnreachable(spec.format) //`Failed to render component, unkown data format ${spec.format} in component spec`
 }
 
-export function processJsonLDDocument<F, C>(spec: JsonLDToForm<F, C>, data: RDFJSData): JsonLDData<any> {
+export async function processJsonLDDocument<F, C>(
+    spec: JsonLDToForm<F, C>,
+    data: RDFJSData
+): Promise<JsonLDData<JsonLDToForm<F, C>>> {
+    const json = await jsonld.fromRDF(data.dataset)
+
     switch (spec.form) {
         case "framed":
-            return { document: typedFrame(data, (spec.frameSpec as unknown) as object, spec.frameOpts) }
+            // return { document: {} }
+            const framed = await typedFrame(json, (spec.frameSpec as unknown) as object, spec.frameOpts)
+            console.log(framed)
+
+            return { document: framed }
 
         case "compacted":
             return { document: {} }

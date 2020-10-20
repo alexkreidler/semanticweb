@@ -7,7 +7,7 @@ import { Strictness } from "./constraints"
 /** typedFrame performs the JSON-LD framing operation and returns a strongly typed object.
  * The type garuantees are only valid if certain options are provided and checks are done aterwards */
 export async function typedFrame<T extends object>(data: any, frame: T, opts?: Options.Frame): Promise<FrameMap<T>> {
-    return ((await jsonld.frame(data, frame, opts)) as unknown) as FrameMap<T>
+    return (jsonld.frame(data, frame, opts) as unknown) as FrameMap<T>
 }
 
 export async function frameWithChecks<T extends object>(
